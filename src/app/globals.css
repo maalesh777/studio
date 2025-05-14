@@ -4,51 +4,51 @@
 
 @layer base {
   :root {
-    --background: 210 60% 98%; /* Very Light Cool Off-White */
-    --foreground: 210 20% 30%; /* Soft Dark Blue/Grey */
+    --background: 40 30% 96%; /* Light Beige */
+    --foreground: 40 10% 25%; /* Dark Greyish Brown */
 
-    --card: 210 60% 94%; /* Slightly Off-White Card */
-    --card-foreground: 210 20% 30%;
+    --card: 40 30% 92%; /* Slightly Darker Light Beige Card */
+    --card-foreground: 40 10% 25%;
 
-    --popover: 210 60% 92%; /* Light Popover */
-    --popover-foreground: 210 20% 30%;
+    --popover: 40 30% 94%; /* Light Beige Popover */
+    --popover-foreground: 40 10% 25%;
 
-    --primary: 160 70% 65%; /* Soft Mint Green */
-    --primary-foreground: 160 70% 20%; /* Darker Mint for text on Primary */
+    --primary: 25 40% 70%; /* Muted Terracotta */
+    --primary-foreground: 25 40% 20%; /* Dark Muted Terracotta */
 
-    --secondary: 30 80% 75%; /* Soft Peach */
-    --secondary-foreground: 30 80% 25%; /* Darker Peach for text on Secondary */
+    --secondary: 90 15% 75%; /* Muted Sage/Grey */
+    --secondary-foreground: 90 15% 25%; /* Dark Muted Sage/Grey */
 
-    --muted: 210 40% 88%; /* Light Greyish Blue Muted */
-    --muted-foreground: 210 30% 50%; /* Muted Text */
+    --muted: 40 20% 88%; /* Light Beige/Grey Muted */
+    --muted-foreground: 40 10% 50%; /* Greyish Brown Muted Text */
 
-    --accent: 280 70% 70%; /* Soft Lavender */
-    --accent-foreground: 280 70% 20%; /* Darker Lavender for text on Accent */
+    --accent: 30 10% 70%; /* Warm Grey */
+    --accent-foreground: 30 10% 20%; /* Dark Warm Grey */
 
-    --destructive: 0 70% 70%; /* Pastel Red */
+    --destructive: 0 50% 75%; /* Muted Pastel Red */
     --destructive-foreground: 0 0% 100%; /* White for text on Destructive */
 
-    --border: 210 30% 80%; /* Light Greyish Blue Border */
-    --input: 210 30% 90%; /* Very Light Input Background */
-    --ring: 160 70% 55%; /* Darker Mint for Focus Ring */
+    --border: 40 20% 80%; /* Light Greyish Beige Border */
+    --input: 40 30% 90%; /* Very Light Beige Input Background */
+    --ring: 25 40% 60%; /* Darker Muted Terracotta for Focus Ring */
 
     --radius: 0.5rem;
 
-    --chart-1: 160 70% 65%; /* Soft Mint Green */
-    --chart-2: 30 80% 75%; /* Soft Peach */
-    --chart-3: 280 70% 70%; /* Soft Lavender */
-    --chart-4: 200 70% 70%; /* Soft Sky Blue */
-    --chart-5: 50 70% 70%; /* Soft Yellow */
+    --chart-1: 25 40% 70%; /* Muted Terracotta */
+    --chart-2: 90 15% 75%; /* Muted Sage/Grey */
+    --chart-3: 30 10% 70%; /* Warm Grey */
+    --chart-4: 200 20% 75%; /* Muted Soft Blue */
+    --chart-5: 50 25% 75%; /* Muted Soft Yellow */
 
     /* Sidebar specific variables for light mode */
-    --sidebar-background: 210 50% 96%;
-    --sidebar-foreground: 210 20% 35%;
-    --sidebar-primary: 160 70% 65%;
-    --sidebar-primary-foreground: 160 70% 20%;
-    --sidebar-accent: 280 70% 70%;
-    --sidebar-accent-foreground: 280 70% 20%;
-    --sidebar-border: 210 30% 85%;
-    --sidebar-ring: 160 70% 55%;
+    --sidebar-background: 40 30% 94%;
+    --sidebar-foreground: 40 10% 30%;
+    --sidebar-primary: 25 40% 70%;
+    --sidebar-primary-foreground: 25 40% 20%;
+    --sidebar-accent: 30 10% 70%;
+    --sidebar-accent-foreground: 30 10% 20%;
+    --sidebar-border: 40 20% 82%;
+    --sidebar-ring: 25 40% 60%;
   }
 
   .dark {
