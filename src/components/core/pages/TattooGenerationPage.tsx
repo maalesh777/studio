@@ -140,7 +140,7 @@ export default function TattooGenerationPage() {
   };
 
   const buttonAnimationClasses = "hover:-translate-y-0.5 active:translate-y-0 transform transition-transform duration-150 ease-in-out";
-  const labelStylingClasses = "text-base bg-primary/20 text-primary-foreground border border-primary/50 px-3 py-1.5 rounded-md inline-block";
+  const labelStylingClasses = "text-base bg-card text-card-foreground border border-border px-3 py-1.5 rounded-md inline-block shadow-md";
 
   return (
     <div className="space-y-12">
@@ -166,7 +166,7 @@ export default function TattooGenerationPage() {
                     <FormControl>
                       <Textarea placeholder="e.g., A majestic wolf howling at a geometric moon, surrounded by forest silhouettes..." {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
                     </FormControl>
-                    <div className="mt-1 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-md">
+                    <div className="mt-1 px-3 py-1.5 bg-card/70 border border-border rounded-md shadow-sm">
                       <FormDescription>Be as detailed as possible for best results.</FormDescription>
                     </div>
                     <FormMessage />
@@ -206,7 +206,7 @@ export default function TattooGenerationPage() {
                       <FormControl>
                         <Input placeholder="e.g., nature, cosmic, vibrant, delicate" {...field} className="bg-input/50 border-input focus:border-primary" />
                       </FormControl>
-                      <div className="mt-1 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-md">
+                      <div className="mt-1 px-3 py-1.5 bg-card/70 border border-border rounded-md shadow-sm">
                         <FormDescription>Comma-separated keywords.</FormDescription>
                       </div>
                       <FormMessage />
@@ -322,3 +322,5 @@ export default function TattooGenerationPage() {
     </div>
   );
 }
+
+    
