@@ -140,8 +140,7 @@ export default function TattooGenerationPage() {
   };
 
   const buttonAnimationClasses = "hover:-translate-y-0.5 active:translate-y-0 transform transition-transform duration-150 ease-in-out";
-  const labelStylingClasses = "text-base bg-card text-card-foreground border border-border px-3 py-1.5 rounded-md inline-block shadow-md";
-
+  
   return (
     <div className="space-y-12">
       <Card className="shadow-2xl border-border bg-card">
@@ -162,7 +161,7 @@ export default function TattooGenerationPage() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={labelStylingClasses}>Tattoo Idea Description</FormLabel>
+                    <FormLabel className="label-base-style label-pastel-1">Tattoo Idea Description</FormLabel>
                     <FormControl>
                       <Textarea placeholder="e.g., A majestic wolf howling at a geometric moon, surrounded by forest silhouettes..." {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
                     </FormControl>
@@ -180,7 +179,7 @@ export default function TattooGenerationPage() {
                   name="stylePreferences"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={labelStylingClasses}>Style Preference</FormLabel>
+                      <FormLabel className="label-base-style label-pastel-2">Style Preference</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="bg-input/50 border-input focus:border-primary">
@@ -202,7 +201,7 @@ export default function TattooGenerationPage() {
                   name="keywords"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={labelStylingClasses}>Keywords (Optional)</FormLabel>
+                      <FormLabel className="label-base-style label-pastel-3">Keywords (Optional)</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., nature, cosmic, vibrant, delicate" {...field} className="bg-input/50 border-input focus:border-primary" />
                       </FormControl>
@@ -217,7 +216,7 @@ export default function TattooGenerationPage() {
               
               <FileUpload
                 label="Reference Image (Optional)"
-                labelClassName={labelStylingClasses}
+                labelClassName="label-base-style label-pastel-4"
                 onFileUpload={(_fileName, dataUri) => setReferenceImageDataUri(dataUri)}
                 id="generate-reference-image"
               />
@@ -286,7 +285,7 @@ export default function TattooGenerationPage() {
                             />
                           <FileUpload
                             label="New Reference Image for Refinement (Required)"
-                            labelClassName={labelStylingClasses} // Apply styling to FileUpload label as well
+                            labelClassName="label-base-style label-pastel-1" 
                             onFileUpload={(_fileName, dataUri) => setRefineReferenceImageUri(dataUri)}
                             id="refine-reference-image"
                           />
@@ -322,3 +321,4 @@ export default function TattooGenerationPage() {
     </div>
   );
 }
+

@@ -211,6 +211,41 @@
     }
   }
 
+  @keyframes labelWobble {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
+
+  .label-base-style {
+    display: inline-block;
+    padding: 0.375rem 0.75rem; /* equiv to py-1.5 px-3 */
+    border-radius: 0.375rem; /* equiv to rounded-md */
+    border-width: 1px;
+    font-size: 1rem; /* equiv to text-base */
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* equiv to shadow-md */
+    animation: labelWobble 3s ease-in-out infinite;
+    color: hsl(var(--foreground)); /* Ensuring good text contrast */
+    margin-bottom: 0.5rem; /* Add some space below the label */
+  }
+
+  .label-pastel-1 {
+    background-color: hsl(var(--chart-1) / 0.7); /* Muted Terracotta with 70% opacity */
+    border-color: hsl(var(--chart-1));
+  }
+  .label-pastel-2 {
+    background-color: hsl(var(--chart-2) / 0.7); /* Muted Sage/Grey with 70% opacity */
+    border-color: hsl(var(--chart-2));
+  }
+  .label-pastel-3 {
+    background-color: hsl(var(--chart-3) / 0.7); /* Warm Grey with 70% opacity */
+    border-color: hsl(var(--chart-3));
+  }
+  .label-pastel-4 {
+    background-color: hsl(var(--chart-4) / 0.7); /* Muted Soft Blue with 70% opacity */
+    border-color: hsl(var(--chart-4));
+  }
+
 }
 
 /* Custom scrollbar */
