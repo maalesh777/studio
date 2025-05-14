@@ -148,7 +148,7 @@ export default function TattooGenerationPage() {
         <CardHeader>
           <CardTitle className="text-3xl font-bold tracking-tight flex items-center">
             <Wand2 className="w-8 h-8 mr-3 text-primary" />
-            Create Your Vision
+            <span className="animated-gradient-text">Create Your Vision</span>
           </CardTitle>
           <CardDescription className="text-lg text-muted-foreground">
             Describe your ideal tattoo. Let our AI bring it to life with unique design proposals.
