@@ -6,7 +6,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import type { TattooDesign } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trash2, Eye, Palette, Tag, CalendarDays, Library as LibraryIcon, Settings } from 'lucide-react'; // Renamed Library to LibraryIcon to avoid conflict
+import { Trash2, Eye, Palette, Tag, CalendarDays, Library as LibraryIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import {
@@ -21,16 +21,16 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Image from 'next/image';
-import { useSettings } from '@/contexts/SettingsContext'; // Import useSettings
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function LibraryPage() {
-  const { t } = useSettings(); // Get translation function
+  const { t } = useSettings();
   const [savedDesigns, setSavedDesigns] = useLocalStorage<TattooDesign[]>('tattooDesigns', []);
   const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    setMounted(true); // Ensure localStorage is accessed only on client
+    setMounted(true); 
   }, []);
 
   const handleDeleteDesign = (id: string) => {
@@ -84,7 +84,7 @@ export default function LibraryPage() {
               <CardTitle className="truncate">{t('designIdea')}</CardTitle>
               {design.referenceImage && (
                 <div className="mt-2 relative h-40 w-full rounded-md overflow-hidden border border-border">
-                  <Image src={design.referenceImage} alt="Reference" layout="fill" objectFit="cover" data-ai-hint="tattoo reference"/>
+                  <Image src={design.referenceImage} alt={t('referenceImageAlt')} layout="fill" objectFit="cover" data-ai-hint="tattoo reference"/>
                 </div>
               )}
             </CardHeader>

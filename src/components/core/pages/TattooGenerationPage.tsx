@@ -23,7 +23,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from 'next/image'; 
 import { cn } from '@/lib/utils';
-import { useSettings } from '@/contexts/SettingsContext'; // Import useSettings
+import { useSettings } from '@/contexts/SettingsContext';
 
 const tattooStyles = [
   "Traditional", "Realism", "Watercolor", "Tribal", "New School", "Neo Traditional", "Japanese", 
@@ -31,6 +31,7 @@ const tattooStyles = [
 ];
 
 // Form schemas remain in English for consistency in code, labels will be translated.
+// Zod messages are not easily translated without extra libraries or more complex setup.
 const formSchema = z.object({
   description: z.string().min(10, { message: "Please describe your tattoo idea in at least 10 characters." }).max(1000),
   stylePreferences: z.string().min(1, { message: "Please select a style." }),
@@ -43,7 +44,7 @@ const refineFormSchema = z.object({
 
 
 export default function TattooGenerationPage() {
-  const { t } = useSettings(); // Get translation function
+  const { t } = useSettings();
 
   const [isLoading, setIsLoading] = useState(false);
   const [generatedProposals, setGeneratedProposals] = useState<GeneratedProposal[]>([]);
@@ -90,7 +91,11 @@ export default function TattooGenerationPage() {
       }
     } catch (error) {
       console.error("Error generating designs:", error);
-      toast({ variant: "destructive", title: t('generationFailed'), description: String(error) || t('generationFailedDescription') });
+      toast({ 
+        variant: "destructive", 
+        title: t('generationFailed'), 
+        description: String(error instanceof Error ? error.message : error) || t('generationFailedDescription') 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -98,7 +103,11 @@ export default function TattooGenerationPage() {
 
   const handleRefineSubmit: SubmitHandler<z.infer<typeof refineFormSchema>> = async (values) => {
     if (!refiningProposal || !refineReferenceImageUri) { 
-        toast({ variant: "destructive", title: t('missingImageForRefinement'), description: t('missingImageForRefinementDescription') });
+        toast({ 
+            variant: "destructive", 
+            title: t('missingImageForRefinement'), 
+            description: t('missingImageForRefinementDescription') 
+        });
         return;
     }
     setIsLoading(true);
@@ -124,7 +133,11 @@ export default function TattooGenerationPage() {
       }
     } catch (error) {
       console.error("Error refining design:", error);
-      toast({ variant: "destructive", title: t('refinementFailed'), description: String(error) || t('refinementFailedDescription') });
+      toast({ 
+        variant: "destructive", 
+        title: t('refinementFailed'), 
+        description: String(error instanceof Error ? error.message : error) || t('refinementFailedDescription') 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -167,7 +180,7 @@ export default function TattooGenerationPage() {
                   <FormItem>
                     <FormLabel className="label-base-style label-pastel-1">{t('tattooIdeaDescription')}</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="z.B. Ein majestätischer Wolf, der einen geometrischen Mond anheult, umgeben von Waldschatten..." {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
+                      <Textarea placeholder={t('tattooIdeaPlaceholder')} {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
                     </FormControl>
                     <div className="mt-1 px-3 py-1.5 bg-background border border-border rounded-md shadow-sm">
                       <FormDescription>{t('tattooIdeaDescriptionHint')}</FormDescription>
@@ -207,7 +220,7 @@ export default function TattooGenerationPage() {
                     <FormItem>
                       <FormLabel className="label-base-style label-pastel-3">{t('keywordsOptional')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="z.B. Natur, kosmisch, lebendig, zart" {...field} className="bg-input/50 border-input focus:border-primary" />
+                        <Input placeholder={t('keywordsPlaceholder')} {...field} className="bg-input/50 border-input focus:border-primary" />
                       </FormControl>
                       <div className="mt-1 px-3 py-1.5 bg-background border border-border rounded-md shadow-sm">
                         <FormDescription>{t('keywordsHint')}</FormDescription>

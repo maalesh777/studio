@@ -18,13 +18,14 @@ export const translations = {
     createYourVisionDescription: 'Beschreibe dein ideales Tattoo. Lass unsere KI es mit einzigartigen Designvorschlägen zum Leben erwecken.',
     tattooIdeaDescription: 'Tattoo-Idee Beschreibung',
     tattooIdeaDescriptionHint: 'Sei so detailliert wie möglich für beste Ergebnisse.',
+    tattooIdeaPlaceholder: "z.B. Ein majestätischer Wolf, der einen geometrischen Mond anheult, umgeben von Waldschatten...",
     stylePreference: 'Stilpräferenz',
     selectStyle: 'Wähle einen Tattoo-Stil',
     keywordsOptional: 'Schlüsselwörter (Optional)',
     keywordsHint: 'Kommagetrennte Schlüsselwörter.',
+    keywordsPlaceholder: "z.B. Natur, kosmisch, lebendig, zart",
     referenceImageOptional: 'Referenzbild (Optional)',
     generateDesigns: 'Designs generieren',
-    uploadAccepted: 'Akzeptiert: {types}',
     designProposals: 'Generierte Vorschläge',
     proposal: 'Vorschlag',
     refine: 'Verfeinern',
@@ -52,6 +53,8 @@ export const translations = {
     areYouSure: 'Bist du sicher?',
     deleteWarning: 'Diese Aktion kann nicht rückgängig gemacht werden. Dadurch wird dieses Tattoo-Design dauerhaft aus deiner Bibliothek entfernt.',
     cancel: 'Abbrechen',
+    referenceImageAlt: "Referenzbild",
+
 
     // AR Preview Page
     arPageTitle: 'Augmented Reality Tattoo Vorschau',
@@ -64,6 +67,7 @@ export const translations = {
     yourARPreview: 'Deine AR Vorschau',
     readyToVisualize: 'Bereit zur Visualisierung!',
     readyToVisualizeHint: 'Klicke auf "AR Vorschau erstellen", um dein Tattoo-Konzept zum Leben zu erwecken.',
+    arPreviewAlt: "AR Tattoo Vorschau",
     
     // Settings Page
     language: 'Sprache',
@@ -73,8 +77,16 @@ export const translations = {
     dark: 'Dunkel',
     german: 'Deutsch',
     english: 'Englisch',
+    settingsPageDescription: "Passe hier deine App-Erfahrung an.",
 
-    // Toasts (Basic translations, hook needs update for full dynamic translation)
+    // FileUpload Component
+    fileUploadHint: "Zum Hochladen klicken oder per Drag & Drop ziehen",
+    uploadAccepted: 'Akzeptiert: {types}',
+    removeImageAriaLabel: "Bild entfernen",
+    invalidFileTypeToastTitle: "Ungültiger Dateityp",
+    invalidFileTypeToastDescription: "Bitte laden Sie {acceptedTypes} hoch.",
+
+    // Toasts
     missingImages: 'Fehlende Bilder',
     missingImagesDescription: 'Bitte lade sowohl ein Tattoo-Design-Bild als auch ein Körperbild hoch.',
     arPreviewGenerated: 'AR Vorschau generiert!',
@@ -110,13 +122,14 @@ export const translations = {
     createYourVisionDescription: 'Describe your ideal tattoo. Let our AI bring it to life with unique design proposals.',
     tattooIdeaDescription: 'Tattoo Idea Description',
     tattooIdeaDescriptionHint: 'Be as detailed as possible for best results.',
+    tattooIdeaPlaceholder: "e.g. A majestic wolf howling at a geometric moon, surrounded by forest shadows...",
     stylePreference: 'Style Preference',
     selectStyle: 'Select a tattoo style',
     keywordsOptional: 'Keywords (Optional)',
     keywordsHint: 'Comma-separated keywords.',
+    keywordsPlaceholder: "e.g. Nature, cosmic, vibrant, delicate",
     referenceImageOptional: 'Reference Image (Optional)',
     generateDesigns: 'Generate Designs',
-    uploadAccepted: 'Accepted: {types}',
     designProposals: 'Generated Proposals',
     proposal: 'Proposal',
     refine: 'Refine',
@@ -128,6 +141,7 @@ export const translations = {
     newReferenceImageRequired: 'New Reference Image for Refinement (Required)',
     designUpdated: 'Design Updated!',
     refineWithImage: 'Refine with Image',
+    
 
     // Library Page
     myDesignLibrary: 'My Design Library',
@@ -144,6 +158,7 @@ export const translations = {
     areYouSure: 'Are you sure?',
     deleteWarning: 'This action cannot be undone. This will permanently delete this tattoo design from your library.',
     cancel: 'Cancel',
+    referenceImageAlt: "Reference image",
 
     // AR Preview Page
     arPageTitle: 'Augmented Reality Tattoo Preview',
@@ -156,6 +171,7 @@ export const translations = {
     yourARPreview: 'Your AR Preview',
     readyToVisualize: 'Ready to visualize!',
     readyToVisualizeHint: 'Click "Generate AR Preview" to see your tattoo concept come to life.',
+    arPreviewAlt: "AR Tattoo Preview",
     
     // Settings Page
     language: 'Language',
@@ -165,6 +181,15 @@ export const translations = {
     dark: 'Dark',
     german: 'German',
     english: 'English',
+    settingsPageDescription: "Customize your app experience here.",
+
+    // FileUpload Component
+    fileUploadHint: "Click to upload or drag and drop",
+    uploadAccepted: 'Accepted: {types}',
+    removeImageAriaLabel: "Remove image",
+    invalidFileTypeToastTitle: "Invalid File Type",
+    invalidFileTypeToastDescription: "Please upload {acceptedTypes}.",
+
 
     // Toasts
     missingImages: 'Missing Images',
@@ -195,8 +220,8 @@ export function getTranslatedString(
   key: TranslationKey,
   replacements?: Record<string, string>
 ): string {
-  const translationSet = translations[lang] || translations.en;
-  let str = translationSet[key] || key; // Fallback to key if not found
+  const translationSet = translations[lang] || translations.en; // Fallback to English if lang not found
+  let str = translationSet[key] || key; // Fallback to key itself if not found in chosen or English set
 
   if (replacements) {
     Object.keys(replacements).forEach(placeholder => {

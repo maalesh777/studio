@@ -13,14 +13,14 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-12">
-      <Card className="shadow-2xl border-ring bg-card">
+      <Card className="shadow-xl border-border bg-card/90 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-3xl font-bold tracking-tight flex items-center">
             <Cog className="w-8 h-8 mr-3 text-primary" />
             <span className="animated-gradient-text">{t('settings')}</span>
           </CardTitle>
           <CardDescription className="text-lg text-muted-foreground">
-            {/* Add a description if needed, e.g., "Customize your app experience." */}
+            {t('settingsPageDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">

@@ -5,10 +5,11 @@ import { ChangeEvent, DragEvent, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { UploadCloud, XCircle } from 'lucide-react'; // Removed ImageIcon as it's not used
+import { UploadCloud, XCircle } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { useSettings } from '@/contexts/SettingsContext'; // Import useSettings
+import { useSettings } from '@/contexts/SettingsContext';
+import { useToast } from '@/hooks/use-toast'; // Import useToast
 
 interface FileUploadProps {
   onFileUpload: (fileName: string, dataUri: string) => void;
@@ -22,22 +23,28 @@ interface FileUploadProps {
 export default function FileUpload({
   onFileUpload,
   acceptedFileTypes = 'image/png, image/jpeg, image/webp',
-  label = 'Upload Image', // Default label, will be overridden by t() if label prop is passed
+  label, // Label will be passed already translated
   id = 'file-upload',
   className,
   labelClassName,
 }: FileUploadProps) {
   const { t } = useSettings();
+  const { toast } = useToast(); // Initialize useToast
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const processedAcceptedTypesString = acceptedFileTypes.replace(/image\//g, '').toUpperCase();
+
   const handleFile = (file: File | null) => {
     if (file) {
       if (!acceptedFileTypes.split(', ').includes(file.type)) {
-        // Consider using a translatable toast message here in a future step
-        alert(`Invalid file type. Please upload ${acceptedFileTypes.replace(/image\//g, '').toUpperCase()}.`);
+        toast({ // Use toast for invalid file type
+          variant: "destructive",
+          title: t('invalidFileTypeToastTitle'),
+          description: t('invalidFileTypeToastDescription', { acceptedTypes: processedAcceptedTypesString }),
+        });
         return;
       }
       const reader = new FileReader();
@@ -86,9 +93,7 @@ export default function FileUpload({
     onFileUpload("", ""); 
   };
   
-  const displayedLabel = label; // The label prop is already translated when passed in
-
-  const acceptedTypesString = acceptedFileTypes.replace(/image\//g, '').toUpperCase();
+  const displayedLabel = label || t('referenceImageOptional'); 
 
   return (
     <div className={cn("w-full space-y-2", className)}>
@@ -122,7 +127,7 @@ export default function FileUpload({
               size="icon"
               onClick={(e) => { e.stopPropagation(); removePreview(); }}
               className="absolute top-2 right-2 bg-background/70 hover:bg-destructive/80 hover:text-destructive-foreground rounded-full z-10"
-              aria-label="Remove image" // Consider translating aria-label in future
+              aria-label={t('removeImageAriaLabel')}
             >
               <XCircle className="h-5 w-5" />
             </Button>
@@ -134,11 +139,10 @@ export default function FileUpload({
           <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
             <UploadCloud className={cn('w-10 h-10 mb-3', dragActive ? 'text-primary' : 'text-muted-foreground')} />
             <p className={cn('mb-2 text-sm', dragActive ? 'text-primary' : 'text-muted-foreground')}>
-              {/* This part might need more complex translation if "Click to upload" and "or drag and drop" are separate phrases */}
-              <span className="font-semibold">Click to upload</span> or drag and drop
+              <span className="font-semibold">{t('fileUploadHint').split(' oder ')[0]}</span> oder {t('fileUploadHint').split(' oder ')[1]}
             </p>
             <p className="text-xs text-muted-foreground/70">
-              {t('uploadAccepted', { types: acceptedTypesString })}
+              {t('uploadAccepted', { types: processedAcceptedTypesString })}
             </p>
           </div>
         )}
