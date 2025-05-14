@@ -5,7 +5,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import type { TattooDesign } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trash2, Eye, Palette, Tag, CalendarDays, ImageIcon, Library } from 'lucide-react'; // Added Library import
+import { Trash2, Eye, Palette, Tag, CalendarDays, ImageIcon, Library } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import {
