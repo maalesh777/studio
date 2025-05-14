@@ -14,6 +14,7 @@ interface FileUploadProps {
   label?: string;
   id?: string;
   className?: string;
+  labelClassName?: string; // Added labelClassName prop
 }
 
 export default function FileUpload({
@@ -22,6 +23,7 @@ export default function FileUpload({
   label = 'Upload Image',
   id = 'file-upload',
   className,
+  labelClassName, // Destructure labelClassName
 }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -82,7 +84,7 @@ export default function FileUpload({
 
   return (
     <div className={cn("w-full space-y-2", className)}>
-      <Label htmlFor={id} className="text-sm font-medium text-foreground/80">{label}</Label>
+      <Label htmlFor={id} className={cn("text-sm font-medium text-foreground/80", labelClassName)}>{label}</Label>
       <div
         id={`${id}-dropzone`}
         onDragEnter={handleDrag}

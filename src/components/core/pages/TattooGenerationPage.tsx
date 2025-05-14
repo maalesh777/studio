@@ -21,18 +21,13 @@ import type { TattooDesign, GeneratedProposal } from '@/lib/types';
 import { Wand2, Edit3, Save, RefreshCcw, CheckCircle2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import Image from 'next/image'; // Keep if needed, though not directly used in snippet
+import Image from 'next/image'; 
 import { cn } from '@/lib/utils';
 
 const tattooStyles = [
   "Traditional", "Realism", "Watercolor", "Tribal", "New School", "Neo Traditional", "Japanese", 
   "Blackwork", "Illustrative", "Geometric", "Minimalist", "Abstract", "Dotwork", "Sketch"
 ];
-
-// const bodyPlacements = [ // This array is defined but not used. Keep or remove based on future plans.
-//   "Arm (Upper)", "Arm (Forearm)", "Leg (Thigh)", "Leg (Calf)", "Back (Full)", "Back (Upper)", "Back (Lower)",
-//   "Chest", "Stomach", "Ribs", "Shoulder", "Neck", "Hand", "Foot", "Ankle", "Wrist"
-// ];
 
 const formSchema = z.object({
   description: z.string().min(10, { message: "Please describe your tattoo idea in at least 10 characters." }).max(1000),
@@ -54,7 +49,7 @@ export default function TattooGenerationPage() {
   const [refineReferenceImageUri, setRefineReferenceImageUri] = useState<string>("");
 
 
-  const [_savedDesigns, setSavedDesigns] = useLocalStorage<TattooDesign[]>('tattooDesigns', []); // Renamed to avoid conflict if savedDesigns is used elsewhere
+  const [_savedDesigns, setSavedDesigns] = useLocalStorage<TattooDesign[]>('tattooDesigns', []); 
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -98,7 +93,7 @@ export default function TattooGenerationPage() {
   };
 
   const handleRefineSubmit: SubmitHandler<z.infer<typeof refineFormSchema>> = async (values) => {
-    if (!refiningProposal || !refineReferenceImageUri) { // Ensure reference image is present for this flow
+    if (!refiningProposal || !refineReferenceImageUri) { 
         toast({ variant: "destructive", title: "Missing Image", description: "Please provide a reference image for refinement." });
         return;
     }
@@ -117,18 +112,12 @@ export default function TattooGenerationPage() {
             p.description === refiningProposal.description ? 
             { ...p, description: result.refinedDesignDescription, refinedImageGenerationPrompt: result.imageGenerationPrompt } : p
         ));
-        // Update the refiningProposal itself if it's still in state, so if dialog re-opens it has new base
         setRefiningProposal(prev => prev ? {...prev, description: result.refinedDesignDescription } : null);
 
         toast({ title: "Design Refined!", description: "The selected design has been updated with new details." });
       } else {
         throw new Error("Refinement did not return a description.");
       }
-      // Do not close dialog immediately, let user see the refinedDescription in the Alert
-      // setRefiningProposal(null); 
-      // setRefineReferenceImageUri(""); 
-      // refineForm.reset();
-
     } catch (error) {
       console.error("Error refining design:", error);
       toast({ variant: "destructive", title: "Refinement Failed", description: String(error) || "Could not refine the tattoo design." });
@@ -145,13 +134,13 @@ export default function TattooGenerationPage() {
       keywords: form.getValues('keywords'),
       referenceImage: referenceImageDataUri || undefined, 
       createdAt: new Date().toISOString(),
-      // Potentially save `proposal.refinedImageGenerationPrompt` if available
     };
     setSavedDesigns(prevDesigns => [...prevDesigns, newDesign]);
     toast({ title: "Design Saved!", description: "View it in your Library." });
   };
 
   const buttonAnimationClasses = "hover:-translate-y-0.5 active:translate-y-0 transform transition-transform duration-150 ease-in-out";
+  const labelStylingClasses = "text-base bg-primary/20 text-primary-foreground border border-primary/50 px-3 py-1.5 rounded-md inline-block";
 
   return (
     <div className="space-y-12">
@@ -173,7 +162,7 @@ export default function TattooGenerationPage() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base">Tattoo Idea Description</FormLabel>
+                    <FormLabel className={labelStylingClasses}>Tattoo Idea Description</FormLabel>
                     <FormControl>
                       <Textarea placeholder="e.g., A majestic wolf howling at a geometric moon, surrounded by forest silhouettes..." {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
                     </FormControl>
@@ -191,7 +180,7 @@ export default function TattooGenerationPage() {
                   name="stylePreferences"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">Style Preference</FormLabel>
+                      <FormLabel className={labelStylingClasses}>Style Preference</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="bg-input/50 border-input focus:border-primary">
@@ -213,7 +202,7 @@ export default function TattooGenerationPage() {
                   name="keywords"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base">Keywords (Optional)</FormLabel>
+                      <FormLabel className={labelStylingClasses}>Keywords (Optional)</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., nature, cosmic, vibrant, delicate" {...field} className="bg-input/50 border-input focus:border-primary" />
                       </FormControl>
@@ -228,6 +217,7 @@ export default function TattooGenerationPage() {
               
               <FileUpload
                 label="Reference Image (Optional)"
+                labelClassName={labelStylingClasses}
                 onFileUpload={(_fileName, dataUri) => setReferenceImageDataUri(dataUri)}
                 id="generate-reference-image"
               />
@@ -255,7 +245,7 @@ export default function TattooGenerationPage() {
                 </CardContent>
                 <CardFooter className="flex flex-col sm:flex-row justify-between gap-2 pt-4">
                   <Dialog onOpenChange={(open) => {
-                     if (!open) { // When dialog closes
+                     if (!open) { 
                         setRefiningProposal(null);
                         setRefineReferenceImageUri("");
                         refineForm.reset();
@@ -296,6 +286,7 @@ export default function TattooGenerationPage() {
                             />
                           <FileUpload
                             label="New Reference Image for Refinement (Required)"
+                            labelClassName={labelStylingClasses} // Apply styling to FileUpload label as well
                             onFileUpload={(_fileName, dataUri) => setRefineReferenceImageUri(dataUri)}
                             id="refine-reference-image"
                           />
@@ -331,7 +322,3 @@ export default function TattooGenerationPage() {
     </div>
   );
 }
-
-    
-
-    
