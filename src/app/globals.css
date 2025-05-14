@@ -4,6 +4,54 @@
 
 @layer base {
   :root {
+    --background: 210 60% 98%; /* Very Light Cool Off-White */
+    --foreground: 210 20% 30%; /* Soft Dark Blue/Grey */
+
+    --card: 210 60% 94%; /* Slightly Off-White Card */
+    --card-foreground: 210 20% 30%;
+
+    --popover: 210 60% 92%; /* Light Popover */
+    --popover-foreground: 210 20% 30%;
+
+    --primary: 160 70% 65%; /* Soft Mint Green */
+    --primary-foreground: 160 70% 20%; /* Darker Mint for text on Primary */
+
+    --secondary: 30 80% 75%; /* Soft Peach */
+    --secondary-foreground: 30 80% 25%; /* Darker Peach for text on Secondary */
+
+    --muted: 210 40% 88%; /* Light Greyish Blue Muted */
+    --muted-foreground: 210 30% 50%; /* Muted Text */
+
+    --accent: 280 70% 70%; /* Soft Lavender */
+    --accent-foreground: 280 70% 20%; /* Darker Lavender for text on Accent */
+
+    --destructive: 0 70% 70%; /* Pastel Red */
+    --destructive-foreground: 0 0% 100%; /* White for text on Destructive */
+
+    --border: 210 30% 80%; /* Light Greyish Blue Border */
+    --input: 210 30% 90%; /* Very Light Input Background */
+    --ring: 160 70% 55%; /* Darker Mint for Focus Ring */
+
+    --radius: 0.5rem;
+
+    --chart-1: 160 70% 65%; /* Soft Mint Green */
+    --chart-2: 30 80% 75%; /* Soft Peach */
+    --chart-3: 280 70% 70%; /* Soft Lavender */
+    --chart-4: 200 70% 70%; /* Soft Sky Blue */
+    --chart-5: 50 70% 70%; /* Soft Yellow */
+
+    /* Sidebar specific variables for light mode */
+    --sidebar-background: 210 50% 96%;
+    --sidebar-foreground: 210 20% 35%;
+    --sidebar-primary: 160 70% 65%;
+    --sidebar-primary-foreground: 160 70% 20%;
+    --sidebar-accent: 280 70% 70%;
+    --sidebar-accent-foreground: 280 70% 20%;
+    --sidebar-border: 210 30% 85%;
+    --sidebar-ring: 160 70% 55%;
+  }
+
+  .dark {
     --background: 222 84% 4.9%; /* Dark Space Blue */
     --foreground: 210 40% 98%; /* Almost White */
 
@@ -32,44 +80,21 @@
     --input: 217 32.6% 12%; /* Darker Muted Blue/Grey Input Background */
     --ring: 180 90% 55%; /* Lighter Teal for Focus Ring */
 
-    --radius: 0.5rem;
-
     --chart-1: 180 90% 45%;
     --chart-2: 210 80% 55%;
     --chart-3: 260 85% 65%;
     --chart-4: 30 80% 55%;
     --chart-5: 340 75% 55%;
-  }
 
-  .dark {
-    /* Keeping dark theme consistent, can adjust if specific dark mode variations are needed later */
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 80% 10%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 80% 8%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 180 90% 45%;
-    --primary-foreground: 222 84% 4.9%;
-
-    --secondary: 217 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217 32.6% 25%;
-    --muted-foreground: 210 40% 70%;
-
-    --accent: 180 90% 45%;
-    --accent-foreground: 222 84% 4.9%;
-
-    --destructive: 0 72.2% 50.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217 32.6% 22%;
-    --input: 217 32.6% 12%;
-    --ring: 180 90% 55%;
+    /* Sidebar specific variables for dark mode */
+    --sidebar-background: 222 80% 7%; /* Slightly darker than card for more depth */
+    --sidebar-foreground: 210 40% 95%;
+    --sidebar-primary: 180 90% 45%;
+    --sidebar-primary-foreground: 222 84% 4.9%;
+    --sidebar-accent: 180 90% 45%;
+    --sidebar-accent-foreground: 222 84% 4.9%;
+    --sidebar-border: 217 32.6% 18%;
+    --sidebar-ring: 180 90% 55%;
   }
 }
 
@@ -93,16 +118,29 @@
     width: 100%;
     height: 100%;
     background-image:
+      linear-gradient(45deg, hsla(var(--accent) / 0.05) 25%, transparent 25%), /* Using accent color for light theme pattern */
+      linear-gradient(-45deg, hsla(var(--accent) / 0.05) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, hsla(var(--accent) / 0.05) 75%),
+      linear-gradient(-45deg, transparent 75%, hsla(var(--accent) / 0.05) 75%);
+    background-size: 60px 60px; /* Slightly larger pattern for a softer feel */
+    background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
+    z-index: -1;
+    opacity: 0.8; /* Adjusted opacity */
+    animation: futuristicPattern 120s linear infinite; /* Slower animation */
+  }
+
+  .dark body::before { /* Keep original pattern for dark mode */
+    background-image:
       linear-gradient(45deg, hsla(var(--primary) / 0.03) 25%, transparent 25%),
       linear-gradient(-45deg, hsla(var(--primary) / 0.03) 25%, transparent 25%),
       linear-gradient(45deg, transparent 75%, hsla(var(--primary) / 0.03) 75%),
       linear-gradient(-45deg, transparent 75%, hsla(var(--primary) / 0.03) 75%);
     background-size: 50px 50px;
     background-position: 0 0, 0 25px, 25px -25px, -25px 0px;
-    z-index: -1;
     opacity: 0.7;
     animation: futuristicPattern 80s linear infinite;
   }
+
 
   @keyframes futuristicPattern {
     0% { background-position: 0 0, 0 25px, 25px -25px, -25px 0px; }
@@ -110,19 +148,19 @@
   }
 }
 
-/* Custom scrollbar for a more futuristic feel */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(var(--background) / 0.5);
+  background: hsl(var(--background) / 0.2); /* Softer track */
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary) / 0.6);
+  background: hsl(var(--primary) / 0.5); /* Use primary color, bit more subtle */
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.8);
+  background: hsl(var(--primary) / 0.7);
 }

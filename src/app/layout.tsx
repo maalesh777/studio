@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en"> {/* Removed "dark" class to default to light mode */}
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AppProviders>
           <div className="flex flex-col min-h-screen">
