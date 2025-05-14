@@ -71,8 +71,8 @@ const generateTattooDesignsPrompt = ai.definePrompt({
 
   Example Usage of incorporateElement Tool:
   If the LLM decides to use the 'incorporateElement' tool, it should format its request similar to this:
-  To consider a 'rose': \{{incorporateElementTool element='rose' reason='The user mentioned traditional styles and roses are classic.'}}
-  To consider 'geometric patterns': \{{incorporateElementTool element='geometric patterns' reason='The user mentioned geometric as a keyword.'}}
+  To consider a 'rose': \\{{incorporateElementTool element='rose' reason='The user mentioned traditional styles and roses are classic.'}}
+  To consider 'geometric patterns': \\{{incorporateElementTool element='geometric patterns' reason='The user mentioned geometric as a keyword.'}}
   The LLM will then receive a true/false response from the tool and can use that information to generate the design proposals.
 
   Based on the user input, generate three different tattoo design proposals as strings inside a JSON array.
