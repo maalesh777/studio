@@ -177,7 +177,9 @@ export default function TattooGenerationPage() {
                     <FormControl>
                       <Textarea placeholder="e.g., A majestic wolf howling at a geometric moon, surrounded by forest silhouettes..." {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
                     </FormControl>
-                    <FormDescription>Be as detailed as possible for best results.</FormDescription>
+                    <div className="mt-1 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-md">
+                      <FormDescription>Be as detailed as possible for best results.</FormDescription>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -215,7 +217,9 @@ export default function TattooGenerationPage() {
                       <FormControl>
                         <Input placeholder="e.g., nature, cosmic, vibrant, delicate" {...field} className="bg-input/50 border-input focus:border-primary" />
                       </FormControl>
-                      <FormDescription>Comma-separated keywords.</FormDescription>
+                      <div className="mt-1 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-md">
+                        <FormDescription>Comma-separated keywords.</FormDescription>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -327,5 +331,7 @@ export default function TattooGenerationPage() {
     </div>
   );
 }
+
+    
 
     
