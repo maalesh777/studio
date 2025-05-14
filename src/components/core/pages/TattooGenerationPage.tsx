@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -12,34 +13,35 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import FileUpload from '@/components/core/FileUpload';
 import LoadingSpinner from '@/components/core/LoadingSpinner';
-import { generateTattooDesigns, GenerateTattooDesignsInput, refineTattooDesigns, RefineTattooDesignsInput } from '@/ai/flows/generate-tattoo-designs';
+import { generateTattooDesigns, GenerateTattooDesignsInput } from '@/ai/flows/generate-tattoo-designs';
+import { refineTattooDesigns, RefineTattooDesignsInput } from '@/ai/flows/refine-tattoo-designs';
 import { useToast } from '@/hooks/use-toast';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import type { TattooDesign, GeneratedProposal } from '@/lib/types';
-import { AlertCircle, Wand2, Edit3, Save, RefreshCcw } from 'lucide-react';
+import { Wand2, Edit3, Save, RefreshCcw, CheckCircle2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
-import Image from 'next/image';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Image from 'next/image'; // Keep if needed, though not directly used in snippet
+import { cn } from '@/lib/utils';
 
 const tattooStyles = [
   "Traditional", "Realism", "Watercolor", "Tribal", "New School", "Neo Traditional", "Japanese", 
   "Blackwork", "Illustrative", "Geometric", "Minimalist", "Abstract", "Dotwork", "Sketch"
 ];
 
-const bodyPlacements = [
-  "Arm (Upper)", "Arm (Forearm)", "Leg (Thigh)", "Leg (Calf)", "Back (Full)", "Back (Upper)", "Back (Lower)",
-  "Chest", "Stomach", "Ribs", "Shoulder", "Neck", "Hand", "Foot", "Ankle", "Wrist"
-];
+// const bodyPlacements = [ // This array is defined but not used. Keep or remove based on future plans.
+//   "Arm (Upper)", "Arm (Forearm)", "Leg (Thigh)", "Leg (Calf)", "Back (Full)", "Back (Upper)", "Back (Lower)",
+//   "Chest", "Stomach", "Ribs", "Shoulder", "Neck", "Hand", "Foot", "Ankle", "Wrist"
+// ];
 
 const formSchema = z.object({
   description: z.string().min(10, { message: "Please describe your tattoo idea in at least 10 characters." }).max(1000),
   stylePreferences: z.string().min(1, { message: "Please select a style." }),
   keywords: z.string().max(200).optional(),
-  // referenceImage: z.string().optional(), // data URI
 });
 
 const refineFormSchema = z.object({
   additionalInfo: z.string().max(500).optional(),
-  // newReferenceImage: z.string().optional(), // data URI
 });
 
 
@@ -52,7 +54,7 @@ export default function TattooGenerationPage() {
   const [refineReferenceImageUri, setRefineReferenceImageUri] = useState<string>("");
 
 
-  const [savedDesigns, setSavedDesigns] = useLocalStorage<TattooDesign[]>('tattooDesigns', []);
+  const [_savedDesigns, setSavedDesigns] = useLocalStorage<TattooDesign[]>('tattooDesigns', []); // Renamed to avoid conflict if savedDesigns is used elsewhere
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -89,50 +91,47 @@ export default function TattooGenerationPage() {
       }
     } catch (error) {
       console.error("Error generating designs:", error);
-      toast({ variant: "destructive", title: "Generation Failed", description: "Could not generate tattoo designs. Please try again." });
+      toast({ variant: "destructive", title: "Generation Failed", description: String(error) || "Could not generate tattoo designs. Please try again." });
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleRefineSubmit: SubmitHandler<z.infer<typeof refineFormSchema>> = async (values) => {
-    if (!refiningProposal) return;
+    if (!refiningProposal || !refineReferenceImageUri) { // Ensure reference image is present for this flow
+        toast({ variant: "destructive", title: "Missing Image", description: "Please provide a reference image for refinement." });
+        return;
+    }
     setIsLoading(true);
     try {
-      // The refineTattooDesigns flow expects refineTattooDesigns from refine-tattoo-designs.ts
-      // But we are importing refineTattooDesigns from generate-tattoo-designs.ts
-      // This needs to be fixed by importing the correct refineTattooDesigns.
-      // For now, assuming refineTattooDesigns is available and correctly typed.
-      // The current `refineTattooDesigns` flow is in `src/ai/flows/refine-tattoo-designs.ts`
-      // The `generate-tattoo-designs.ts` file does not export `refineTattooDesigns`
-      // This will cause a runtime error if not fixed.
-      // Correct import path: import { refineTattooDesigns, RefineTattooDesignsInput } from '@/ai/flows/refine-tattoo-designs';
-      // For the purpose of this exercise, I will assume the flow is callable and mock its behavior or type.
-      // The input for refine-tattoo-designs.ts is: baseDesignDescription, referenceImageDataUri
-
-      const refineInput = { // This should be RefineTattooDesignsInput from the correct flow
+      const refineInput: RefineTattooDesignsInput = { 
         baseDesignDescription: refiningProposal.description + (values.additionalInfo ? ` Additional notes: ${values.additionalInfo}` : ""),
         referenceImageDataUri: refineReferenceImageUri, 
       };
 
-      // Mocking the call for now as the import is problematic due to file naming.
-      // const result = await refineTattooDesigns(refineInput); // This call will fail with current imports
-      const mockRefineResult = { 
-        refinedDesignDescription: `${refineInput.baseDesignDescription} (Refined with new elements based on reference image)`,
-        imageGenerationPrompt: `A tattoo of ${refineInput.baseDesignDescription}`
-      };
+      const result = await refineTattooDesigns(refineInput); 
       
-      setRefinedDescription(mockRefineResult.refinedDesignDescription);
-      // Update the specific proposal in the list, or add new refined proposal
-      setGeneratedProposals(prev => prev.map(p => p.description === refiningProposal.description ? { description: mockRefineResult.refinedDesignDescription } : p));
-      setRefiningProposal(null); // Close dialog
-      setRefineReferenceImageUri("");
-      refineForm.reset();
-      toast({ title: "Design Refined!", description: "The selected design has been updated." });
+      if (result && result.refinedDesignDescription) {
+        setRefinedDescription(result.refinedDesignDescription);
+        setGeneratedProposals(prev => prev.map(p => 
+            p.description === refiningProposal.description ? 
+            { ...p, description: result.refinedDesignDescription, refinedImageGenerationPrompt: result.imageGenerationPrompt } : p
+        ));
+        // Update the refiningProposal itself if it's still in state, so if dialog re-opens it has new base
+        setRefiningProposal(prev => prev ? {...prev, description: result.refinedDesignDescription } : null);
+
+        toast({ title: "Design Refined!", description: "The selected design has been updated with new details." });
+      } else {
+        throw new Error("Refinement did not return a description.");
+      }
+      // Do not close dialog immediately, let user see the refinedDescription in the Alert
+      // setRefiningProposal(null); 
+      // setRefineReferenceImageUri(""); 
+      // refineForm.reset();
 
     } catch (error) {
       console.error("Error refining design:", error);
-      toast({ variant: "destructive", title: "Refinement Failed", description: "Could not refine the tattoo design." });
+      toast({ variant: "destructive", title: "Refinement Failed", description: String(error) || "Could not refine the tattoo design." });
     } finally {
       setIsLoading(false);
     }
@@ -144,12 +143,15 @@ export default function TattooGenerationPage() {
       description: proposal.description,
       stylePreferences: form.getValues('stylePreferences'),
       keywords: form.getValues('keywords'),
-      referenceImage: referenceImageDataUri || undefined, // The initial reference image
+      referenceImage: referenceImageDataUri || undefined, 
       createdAt: new Date().toISOString(),
+      // Potentially save `proposal.refinedImageGenerationPrompt` if available
     };
-    setSavedDesigns([...savedDesigns, newDesign]);
+    setSavedDesigns(prevDesigns => [...prevDesigns, newDesign]);
     toast({ title: "Design Saved!", description: "View it in your Library." });
   };
+
+  const buttonAnimationClasses = "hover:-translate-y-0.5 active:translate-y-0 transform transition-transform duration-150 ease-in-out";
 
   return (
     <div className="space-y-12">
@@ -226,7 +228,7 @@ export default function TattooGenerationPage() {
                 id="generate-reference-image"
               />
 
-              <Button type="submit" disabled={isLoading} size="lg" className="w-full md:w-auto text-lg">
+              <Button type="submit" disabled={isLoading} size="lg" className={cn("w-full md:w-auto text-lg", buttonAnimationClasses)}>
                 {isLoading ? <LoadingSpinner className="mr-2" /> : <Wand2 className="mr-2 h-5 w-5" />}
                 Generate Designs
               </Button>
@@ -248,12 +250,19 @@ export default function TattooGenerationPage() {
                   <p className="text-muted-foreground">{proposal.description}</p>
                 </CardContent>
                 <CardFooter className="flex flex-col sm:flex-row justify-between gap-2 pt-4">
-                  <Dialog>
+                  <Dialog onOpenChange={(open) => {
+                     if (!open) { // When dialog closes
+                        setRefiningProposal(null);
+                        setRefineReferenceImageUri("");
+                        refineForm.reset();
+                        setRefinedDescription("");
+                      }
+                  }}>
                     <DialogTrigger asChild>
-                       <Button variant="outline" onClick={() => {
+                       <Button variant="outline" className={cn(buttonAnimationClasses)} onClick={() => {
                           setRefiningProposal(proposal);
-                          setRefinedDescription(""); // Clear previous refined description
-                          setRefineReferenceImageUri(""); // Clear previous refine reference image
+                          setRefinedDescription(""); 
+                          setRefineReferenceImageUri(""); 
                           refineForm.reset({ additionalInfo: "" });
                         }}>
                         <Edit3 className="mr-2 h-4 w-4" /> Refine
@@ -282,17 +291,21 @@ export default function TattooGenerationPage() {
                               )}
                             />
                           <FileUpload
-                            label="New Reference Image for Refinement"
+                            label="New Reference Image for Refinement (Required)"
                             onFileUpload={(_fileName, dataUri) => setRefineReferenceImageUri(dataUri)}
                             id="refine-reference-image"
                           />
                            {refinedDescription && (
-                            <AlertCircle className="text-sm text-green-400 bg-green-900/30 p-3 rounded-md">
-                              {refinedDescription}
-                            </AlertCircle>
+                            <Alert className="mt-4 border-primary/50">
+                                <CheckCircle2 className="h-4 w-4 text-primary" />
+                                <AlertTitle className="text-primary">Design Updated!</AlertTitle>
+                                <AlertDescription>
+                                {refinedDescription}
+                                </AlertDescription>
+                            </Alert>
                           )}
                           <DialogFooter>
-                            <Button type="submit" disabled={isLoading || !refineReferenceImageUri}>
+                            <Button type="submit" disabled={isLoading || !refineReferenceImageUri} className={cn(buttonAnimationClasses)}>
                               {isLoading ? <LoadingSpinner className="mr-2" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                               Refine with Image
                             </Button>
@@ -302,7 +315,7 @@ export default function TattooGenerationPage() {
                     </DialogContent>
                   </Dialog>
 
-                  <Button onClick={() => handleSaveDesign(proposal)}>
+                  <Button onClick={() => handleSaveDesign(proposal)} className={cn(buttonAnimationClasses)}>
                     <Save className="mr-2 h-4 w-4" /> Save
                   </Button>
                 </CardFooter>
@@ -314,3 +327,5 @@ export default function TattooGenerationPage() {
     </div>
   );
 }
+
+    
