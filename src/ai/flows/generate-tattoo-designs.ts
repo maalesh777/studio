@@ -1,3 +1,4 @@
+
 // This is a server-side file.
 'use server';
 
@@ -69,10 +70,10 @@ const generateTattooDesignsPrompt = ai.definePrompt({
   {{~#if referenceImage}}Reference Image: {{media url=referenceImage}}{{/if}}
 
   Example Usage of incorporateElement Tool:
-
-  Let's consider some design elements based on the keywords and style:
-  Should a traditional rose be incorporated into the design? {{incorporateElementTool element=\'rose\' reason=\'The user mentioned traditional styles and roses are classic.\'}}
-  Should geometric patterns be incorporated? {{incorporateElementTool element=\'geometric patterns\' reason=\'The user mentioned geometric as a keyword.\'}}
+  If the LLM decides to use the 'incorporateElement' tool, it should format its request similar to this:
+  To consider a 'rose': \{{incorporateElementTool element='rose' reason='The user mentioned traditional styles and roses are classic.'}}
+  To consider 'geometric patterns': \{{incorporateElementTool element='geometric patterns' reason='The user mentioned geometric as a keyword.'}}
+  The LLM will then receive a true/false response from the tool and can use that information to generate the design proposals.
 
   Based on the user input, generate three different tattoo design proposals as strings inside a JSON array.
   Each design should be distinct and reflect the user's preferences.
@@ -93,3 +94,4 @@ const generateTattooDesignsFlow = ai.defineFlow(
     return output!;
   }
 );
+
