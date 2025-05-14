@@ -184,6 +184,33 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
+
+  .dynamic-wavy-gradient-background {
+    background: linear-gradient(-45deg, 
+      hsl(var(--primary)), 
+      hsl(var(--secondary)), 
+      hsl(var(--accent)), 
+      hsl(var(--chart-1)),
+      hsl(var(--chart-2)),
+      hsl(var(--chart-3)),
+      hsl(var(--primary)) /* Loop back to primary for smoother transition */
+    );
+    background-size: 500% 500%;
+    animation: wavyGradientShift 20s ease infinite;
+  }
+
+  @keyframes wavyGradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
 }
 
 /* Custom scrollbar */
