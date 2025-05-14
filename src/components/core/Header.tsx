@@ -1,19 +1,22 @@
-// src/components/core/Header.tsx
+
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Sparkles, Library, Camera } from 'lucide-react'; // Icons for navigation
-
-const navItems = [
-  { href: '/', label: 'Generate', icon: Sparkles },
-  { href: '/library', label: 'Library', icon: Library },
-  { href: '/ar-preview', label: 'AR Preview', icon: Camera },
-];
+import { Sparkles, Library, Camera, Cog } from 'lucide-react'; 
+import { useSettings } from '@/contexts/SettingsContext';
 
 export default function Header() {
   const pathname = usePathname();
+  const { t, language } = useSettings();
+
+  const navItems = [
+    { href: '/', labelKey: 'generate' as const, icon: Sparkles },
+    { href: '/library', labelKey: 'library' as const, icon: Library },
+    { href: '/ar-preview', labelKey: 'arPreview' as const, icon: Camera },
+    { href: '/settings', labelKey: 'settings' as const, icon: Cog },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -35,10 +38,10 @@ export default function Header() {
             <path d="M7 9L2 6.5" />
           </svg>
           <span className="text-2xl font-bold tracking-tighter animated-gradient-text">
-            TattooAI:Vision
+            {t('appTitle')}
           </span>
         </Link>
-        <nav className="flex items-center space-x-2 sm:space-x-4">
+        <nav className="flex items-center space-x-1 sm:space-x-2 md:space-x-4">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -46,17 +49,16 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'group flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
+                  'group flex items-center justify-center rounded-md px-2 py-2 text-xs sm:text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background',
                   pathname === item.href
                     ? 'bg-primary text-primary-foreground shadow-md'
                     : 'text-foreground/80 hover:text-foreground',
-                  'relative' // For potential future animations/indicators
+                  'relative' 
                 )}
                 aria-current={pathname === item.href ? 'page' : undefined}
               >
-                <Icon className="mr-0 h-5 w-5 sm:mr-2" />
-                <span className="hidden sm:inline">{item.label}</span>
-                 {/* Animated underline effect */}
+                <Icon className="mr-0 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5" />
+                <span className="hidden sm:inline">{t(item.labelKey)}</span>
                 <span
                   className={cn(
                     "absolute bottom-0 left-0 h-0.5 bg-primary transition-all duration-300 ease-out group-hover:w-full",

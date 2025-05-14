@@ -23,12 +23,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from 'next/image'; 
 import { cn } from '@/lib/utils';
+import { useSettings } from '@/contexts/SettingsContext'; // Import useSettings
 
 const tattooStyles = [
   "Traditional", "Realism", "Watercolor", "Tribal", "New School", "Neo Traditional", "Japanese", 
   "Blackwork", "Illustrative", "Geometric", "Minimalist", "Abstract", "Dotwork", "Sketch"
 ];
 
+// Form schemas remain in English for consistency in code, labels will be translated.
 const formSchema = z.object({
   description: z.string().min(10, { message: "Please describe your tattoo idea in at least 10 characters." }).max(1000),
   stylePreferences: z.string().min(1, { message: "Please select a style." }),
@@ -41,6 +43,8 @@ const refineFormSchema = z.object({
 
 
 export default function TattooGenerationPage() {
+  const { t } = useSettings(); // Get translation function
+
   const [isLoading, setIsLoading] = useState(false);
   const [generatedProposals, setGeneratedProposals] = useState<GeneratedProposal[]>([]);
   const [referenceImageDataUri, setReferenceImageDataUri] = useState<string>("");
@@ -80,13 +84,13 @@ export default function TattooGenerationPage() {
       const result = await generateTattooDesigns(input);
       if (result && result.designProposals) {
         setGeneratedProposals(result.designProposals.map(desc => ({ description: desc })));
-        toast({ title: "Designs Generated!", description: "Explore your new tattoo ideas below." });
+        toast({ title: t('designsGenerated'), description: t('designsGeneratedDescription') });
       } else {
         throw new Error("No proposals returned.");
       }
     } catch (error) {
       console.error("Error generating designs:", error);
-      toast({ variant: "destructive", title: "Generation Failed", description: String(error) || "Could not generate tattoo designs. Please try again." });
+      toast({ variant: "destructive", title: t('generationFailed'), description: String(error) || t('generationFailedDescription') });
     } finally {
       setIsLoading(false);
     }
@@ -94,7 +98,7 @@ export default function TattooGenerationPage() {
 
   const handleRefineSubmit: SubmitHandler<z.infer<typeof refineFormSchema>> = async (values) => {
     if (!refiningProposal || !refineReferenceImageUri) { 
-        toast({ variant: "destructive", title: "Missing Image", description: "Please provide a reference image for refinement." });
+        toast({ variant: "destructive", title: t('missingImageForRefinement'), description: t('missingImageForRefinementDescription') });
         return;
     }
     setIsLoading(true);
@@ -114,13 +118,13 @@ export default function TattooGenerationPage() {
         ));
         setRefiningProposal(prev => prev ? {...prev, description: result.refinedDesignDescription } : null);
 
-        toast({ title: "Design Refined!", description: "The selected design has been updated with new details." });
+        toast({ title: t('designRefined'), description: t('designRefinedDescription') });
       } else {
         throw new Error("Refinement did not return a description.");
       }
     } catch (error) {
       console.error("Error refining design:", error);
-      toast({ variant: "destructive", title: "Refinement Failed", description: String(error) || "Could not refine the tattoo design." });
+      toast({ variant: "destructive", title: t('refinementFailed'), description: String(error) || t('refinementFailedDescription') });
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +140,7 @@ export default function TattooGenerationPage() {
       createdAt: new Date().toISOString(),
     };
     setSavedDesigns(prevDesigns => [...prevDesigns, newDesign]);
-    toast({ title: "Design Saved!", description: "View it in your Library." });
+    toast({ title: t('designSaved'), description: t('designSavedDescription') });
   };
 
   const buttonAnimationClasses = "hover:-translate-y-0.5 active:translate-y-0 transform transition-transform duration-150 ease-in-out";
@@ -147,10 +151,10 @@ export default function TattooGenerationPage() {
         <CardHeader>
           <CardTitle className="text-3xl font-bold tracking-tight flex items-center">
             <Wand2 className="w-8 h-8 mr-3 text-primary" />
-            <span className="animated-gradient-text">Create Your Vision</span>
+            <span className="animated-gradient-text">{t('createYourVision')}</span>
           </CardTitle>
           <CardDescription className="text-lg text-muted-foreground">
-            Describe your ideal tattoo. Let our AI bring it to life with unique design proposals.
+            {t('createYourVisionDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -161,12 +165,12 @@ export default function TattooGenerationPage() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="label-base-style label-pastel-1">Tattoo Idea Description</FormLabel>
+                    <FormLabel className="label-base-style label-pastel-1">{t('tattooIdeaDescription')}</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="e.g., A majestic wolf howling at a geometric moon, surrounded by forest silhouettes..." {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
+                      <Textarea placeholder="z.B. Ein majestätischer Wolf, der einen geometrischen Mond anheult, umgeben von Waldschatten..." {...field} rows={5} className="bg-input/50 border-input focus:border-primary" />
                     </FormControl>
                     <div className="mt-1 px-3 py-1.5 bg-background border border-border rounded-md shadow-sm">
-                      <FormDescription>Be as detailed as possible for best results.</FormDescription>
+                      <FormDescription>{t('tattooIdeaDescriptionHint')}</FormDescription>
                     </div>
                     <FormMessage />
                   </FormItem>
@@ -179,11 +183,11 @@ export default function TattooGenerationPage() {
                   name="stylePreferences"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="label-base-style label-pastel-2">Style Preference</FormLabel>
+                      <FormLabel className="label-base-style label-pastel-2">{t('stylePreference')}</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="bg-input/50 border-input focus:border-primary">
-                            <SelectValue placeholder="Select a tattoo style" />
+                            <SelectValue placeholder={t('selectStyle')} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="bg-popover border-popover">
@@ -201,12 +205,12 @@ export default function TattooGenerationPage() {
                   name="keywords"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="label-base-style label-pastel-3">Keywords (Optional)</FormLabel>
+                      <FormLabel className="label-base-style label-pastel-3">{t('keywordsOptional')}</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., nature, cosmic, vibrant, delicate" {...field} className="bg-input/50 border-input focus:border-primary" />
+                        <Input placeholder="z.B. Natur, kosmisch, lebendig, zart" {...field} className="bg-input/50 border-input focus:border-primary" />
                       </FormControl>
                       <div className="mt-1 px-3 py-1.5 bg-background border border-border rounded-md shadow-sm">
-                        <FormDescription>Comma-separated keywords.</FormDescription>
+                        <FormDescription>{t('keywordsHint')}</FormDescription>
                       </div>
                       <FormMessage />
                     </FormItem>
@@ -215,7 +219,7 @@ export default function TattooGenerationPage() {
               </div>
               
               <FileUpload
-                label="Reference Image (Optional)"
+                label={t('referenceImageOptional')}
                 labelClassName="label-base-style label-pastel-4"
                 onFileUpload={(_fileName, dataUri) => setReferenceImageDataUri(dataUri)}
                 id="generate-reference-image"
@@ -223,7 +227,7 @@ export default function TattooGenerationPage() {
 
               <Button type="submit" disabled={isLoading} size="lg" className={cn("w-full md:w-auto text-lg", buttonAnimationClasses)}>
                 {isLoading ? <LoadingSpinner className="mr-2" /> : <Wand2 className="mr-2 h-5 w-5" />}
-                Generate Designs
+                {t('generateDesigns')}
               </Button>
             </form>
           </Form>
@@ -232,12 +236,12 @@ export default function TattooGenerationPage() {
 
       {generatedProposals.length > 0 && (
         <div className="space-y-8">
-          <h2 className="text-3xl font-semibold tracking-tight text-center">Generated Proposals</h2>
+          <h2 className="text-3xl font-semibold tracking-tight text-center">{t('designProposals')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {generatedProposals.map((proposal, index) => (
               <Card key={index} className="flex flex-col shadow-lg hover:shadow-primary/30 transition-shadow duration-300 bg-card/90">
                 <CardHeader>
-                  <CardTitle>Proposal {index + 1}</CardTitle>
+                  <CardTitle>{t('proposal')} {index + 1}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <p className="text-muted-foreground">{proposal.description}</p>
@@ -258,14 +262,14 @@ export default function TattooGenerationPage() {
                           setRefineReferenceImageUri(""); 
                           refineForm.reset({ additionalInfo: "" });
                         }}>
-                        <Edit3 className="mr-2 h-4 w-4" /> Refine
+                        <Edit3 className="mr-2 h-4 w-4" /> {t('refine')}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[525px] bg-background border-border">
                       <DialogHeader>
-                        <DialogTitle className="text-xl">Refine Tattoo Proposal</DialogTitle>
+                        <DialogTitle className="text-xl">{t('refineTattooProposal')}</DialogTitle>
                         <DialogDescription>
-                          Add more details or upload a new reference image to guide the refinement. Current base: "{refiningProposal?.description.substring(0,100)}..."
+                          {t('refineTattooProposalDescription', { baseDescription: refiningProposal?.description.substring(0,100) + "..." || ""})}
                         </DialogDescription>
                       </DialogHeader>
                       <Form {...refineForm}>
@@ -275,16 +279,16 @@ export default function TattooGenerationPage() {
                               name="additionalInfo"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Additional Notes/Changes</FormLabel>
+                                  <FormLabel>{t('additionalNotes')}</FormLabel>
                                   <FormControl>
-                                    <Textarea placeholder="e.g., Make the lines thinner, add more shading here..." {...field} rows={3} className="bg-input/50 border-input focus:border-primary"/>
+                                    <Textarea placeholder={t('additionalNotesPlaceholder')} {...field} rows={3} className="bg-input/50 border-input focus:border-primary"/>
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
                               )}
                             />
                           <FileUpload
-                            label="New Reference Image for Refinement (Required)"
+                            label={t('newReferenceImageRequired')}
                             labelClassName="label-base-style label-pastel-1" 
                             onFileUpload={(_fileName, dataUri) => setRefineReferenceImageUri(dataUri)}
                             id="refine-reference-image"
@@ -292,7 +296,7 @@ export default function TattooGenerationPage() {
                            {refinedDescription && (
                             <Alert className="mt-4 border-primary/50">
                                 <CheckCircle2 className="h-4 w-4 text-primary" />
-                                <AlertTitle className="text-primary">Design Updated!</AlertTitle>
+                                <AlertTitle className="text-primary">{t('designUpdated')}</AlertTitle>
                                 <AlertDescription>
                                 {refinedDescription}
                                 </AlertDescription>
@@ -301,7 +305,7 @@ export default function TattooGenerationPage() {
                           <DialogFooter>
                             <Button type="submit" disabled={isLoading || !refineReferenceImageUri} className={cn(buttonAnimationClasses)}>
                               {isLoading ? <LoadingSpinner className="mr-2" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
-                              Refine with Image
+                              {t('refineWithImage')}
                             </Button>
                           </DialogFooter>
                         </form>
@@ -310,7 +314,7 @@ export default function TattooGenerationPage() {
                   </Dialog>
 
                   <Button onClick={() => handleSaveDesign(proposal)} className={cn(buttonAnimationClasses)}>
-                    <Save className="mr-2 h-4 w-4" /> Save
+                    <Save className="mr-2 h-4 w-4" /> {t('save')}
                   </Button>
                 </CardFooter>
               </Card>
@@ -321,4 +325,3 @@ export default function TattooGenerationPage() {
     </div>
   );
 }
-

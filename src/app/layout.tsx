@@ -1,9 +1,11 @@
-import type { Metadata } from 'next';
+
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/core/Header';
 import { Toaster } from "@/components/ui/toaster";
 import AppProviders from '@/components/core/AppProviders';
+import { translations } from '@/lib/translations'; // Import translations
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -15,9 +17,17 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+// Default metadata to German initially
 export const metadata: Metadata = {
-  title: 'TattooAI:Vision',
-  description: 'Revolutionary AI-powered tattoo design app with a futuristic aesthetic.',
+  title: translations.de.appTitle,
+  description: translations.de.appDescription,
+};
+
+export const viewport: Viewport = {
+  themeColor: [ // For theme switching PWA support
+    { media: '(prefers-color-scheme: light)', color: 'hsl(40 30% 96%)' }, // Corresponds to light theme --background
+    { media: '(prefers-color-scheme: dark)', color: 'hsl(222 84% 4.9%)' }, // Corresponds to dark theme --background
+  ],
 };
 
 export default function RootLayout({
@@ -26,7 +36,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    // The lang attribute will be set dynamically by SettingsContext on the client
+    // The class (for theme) will also be set dynamically by SettingsContext
+    <html lang="de" className="light"> 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AppProviders>
           <div className="flex flex-col min-h-screen">

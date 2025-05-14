@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -12,12 +13,14 @@ import Image from 'next/image';
 import { Camera, Sparkles, AlertTriangle } from 'lucide-react';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import type { TattooDesign } from '@/lib/types';
+import { useSettings } from '@/contexts/SettingsContext'; // Import useSettings
 
 export default function ARPreviewPage() {
+  const { t } = useSettings(); // Get translation function
   const [tattooDesignDataUri, setTattooDesignDataUri] = useState<string>("");
-  const [tattooDesignFileName, setTattooDesignFileName] = useState<string>("");
+  const [_tattooDesignFileName, setTattooDesignFileName] = useState<string>(""); // Keep state if needed internally
   const [bodyImageDataUri, setBodyImageDataUri] = useState<string>("");
-  const [bodyImageFileName, setBodyImageFileName] = useState<string>("");
+  const [_bodyImageFileName, setBodyImageFileName] = useState<string>(""); // Keep state if needed internally
   
   const [arResultDataUri, setArResultDataUri] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -32,10 +35,10 @@ export default function ARPreviewPage() {
       const design = savedDesigns.find(d => d.id === designId);
       if (design) {
         setInitialDesignDescription(design.description);
-        if (design.referenceImage) { // If a reference image was saved with the design
+        if (design.referenceImage) { 
           setTattooDesignDataUri(design.referenceImage);
           setTattooDesignFileName("Saved Reference");
-        } else if (design.generatedImageUri) { // Or if an AI generated image was saved
+        } else if (design.generatedImageUri) { 
            setTattooDesignDataUri(design.generatedImageUri);
            setTattooDesignFileName("AI Generated Image");
         }
@@ -48,8 +51,8 @@ export default function ARPreviewPage() {
     if (!tattooDesignDataUri || !bodyImageDataUri) {
       toast({
         variant: "destructive",
-        title: "Missing Images",
-        description: "Please upload both a tattoo design image and a body image.",
+        title: t('missingImages'),
+        description: t('missingImagesDescription'),
       });
       return;
     }
@@ -58,12 +61,12 @@ export default function ARPreviewPage() {
     try {
       const input: ARPreviewTattooInput = {
         tattooDesignDataUri,
-        bodyImageDateUri: bodyImageDataUri, // Corrected typo in flow variable name
+        bodyImageDateUri: bodyImageDataUri, 
       };
       const result = await arPreviewTattoo(input);
       if (result && result.arVisualizationDataUri) {
         setArResultDataUri(result.arVisualizationDataUri);
-        toast({ title: "AR Preview Generated!", description: "See how your tattoo might look below." });
+        toast({ title: t('arPreviewGenerated'), description: t('arPreviewGeneratedDescription') });
       } else {
         throw new Error("No AR visualization returned.");
       }
@@ -71,8 +74,8 @@ export default function ARPreviewPage() {
       console.error("Error generating AR preview:", error);
       toast({
         variant: "destructive",
-        title: "AR Preview Failed",
-        description: String(error) || "Could not generate AR preview. The AI model might be unavailable or the images may not be suitable. Please try again with different images.",
+        title: t('arPreviewFailed'),
+        description: String(error) || t('arPreviewFailedDescription'),
       });
     } finally {
       setIsLoading(false);
@@ -85,23 +88,27 @@ export default function ARPreviewPage() {
         <CardHeader>
           <CardTitle className="text-3xl font-bold tracking-tight flex items-center">
             <Camera className="w-8 h-8 mr-3 text-primary" />
-            Augmented Reality Tattoo Preview
+            {t('arPageTitle')}
           </CardTitle>
           <CardDescription className="text-lg text-muted-foreground">
-            Visualize your tattoo design on your body. Upload an image of the tattoo and a photo of where you want it.
-            {initialDesignDescription && <span className="block mt-2 text-sm italic">Previewing concept: "{initialDesignDescription.substring(0,100)}..."</span>}
+            {t('arPageDescription')}
+            {initialDesignDescription && (
+              <span className="block mt-2 text-sm italic">
+                {t('previewingConcept', { description: initialDesignDescription.substring(0,100) + "..." })}
+              </span>
+            )}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <FileUpload
-              label="1. Tattoo Design Image"
+              label={t('tattooDesignImage')}
               onFileUpload={(fileName, dataUri) => { setTattooDesignDataUri(dataUri); setTattooDesignFileName(fileName); }}
               id="tattoo-design-upload"
               className={tattooDesignDataUri ? "border-green-500/50" : ""}
             />
             <FileUpload
-              label="2. Body Part Image"
+              label={t('bodyPartImage')}
               onFileUpload={(fileName, dataUri) => { setBodyImageDataUri(dataUri); setBodyImageFileName(fileName); }}
               id="body-image-upload"
               className={bodyImageDataUri ? "border-green-500/50" : ""}
@@ -114,7 +121,7 @@ export default function ARPreviewPage() {
             className="w-full md:w-auto text-lg"
           >
             {isLoading ? <LoadingSpinner className="mr-2" /> : <Sparkles className="mr-2 h-5 w-5" />}
-            Generate AR Preview
+            {t('generateARPreview')}
           </Button>
         </CardContent>
       </Card>
@@ -122,14 +129,14 @@ export default function ARPreviewPage() {
       {isLoading && (
         <div className="text-center py-8">
           <LoadingSpinner size={48} />
-          <p className="mt-4 text-lg text-muted-foreground">Generating your AR preview... This may take a moment.</p>
+          <p className="mt-4 text-lg text-muted-foreground">{t('generatingARPreview')}</p>
         </div>
       )}
 
       {arResultDataUri && !isLoading && (
         <Card className="shadow-xl border-primary/30 bg-card/90">
           <CardHeader>
-            <CardTitle className="text-2xl">Your AR Preview</CardTitle>
+            <CardTitle className="text-2xl">{t('yourARPreview')}</CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center items-center">
             <Image
@@ -147,8 +154,8 @@ export default function ARPreviewPage() {
         <Card className="border-dashed border-primary/30 bg-card/50 py-8">
           <CardContent className="text-center space-y-3 text-muted-foreground">
               <AlertTriangle className="mx-auto h-12 w-12 text-primary/50" />
-              <p className="text-lg">Ready to visualize!</p>
-              <p>Click "Generate AR Preview" to see your tattoo concept come to life.</p>
+              <p className="text-lg">{t('readyToVisualize')}</p>
+              <p>{t('readyToVisualizeHint')}</p>
           </CardContent>
         </Card>
       )}

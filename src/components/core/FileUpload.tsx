@@ -1,12 +1,14 @@
+
 "use client";
 
 import { ChangeEvent, DragEvent, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { UploadCloud, XCircle, Image as ImageIcon } from 'lucide-react';
+import { UploadCloud, XCircle } from 'lucide-react'; // Removed ImageIcon as it's not used
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { useSettings } from '@/contexts/SettingsContext'; // Import useSettings
 
 interface FileUploadProps {
   onFileUpload: (fileName: string, dataUri: string) => void;
@@ -14,17 +16,18 @@ interface FileUploadProps {
   label?: string;
   id?: string;
   className?: string;
-  labelClassName?: string; // Added labelClassName prop
+  labelClassName?: string;
 }
 
 export default function FileUpload({
   onFileUpload,
   acceptedFileTypes = 'image/png, image/jpeg, image/webp',
-  label = 'Upload Image',
+  label = 'Upload Image', // Default label, will be overridden by t() if label prop is passed
   id = 'file-upload',
   className,
-  labelClassName, // Destructure labelClassName
+  labelClassName,
 }: FileUploadProps) {
+  const { t } = useSettings();
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -33,7 +36,8 @@ export default function FileUpload({
   const handleFile = (file: File | null) => {
     if (file) {
       if (!acceptedFileTypes.split(', ').includes(file.type)) {
-        alert(`Invalid file type. Please upload ${acceptedFileTypes}.`);
+        // Consider using a translatable toast message here in a future step
+        alert(`Invalid file type. Please upload ${acceptedFileTypes.replace(/image\//g, '').toUpperCase()}.`);
         return;
       }
       const reader = new FileReader();
@@ -77,14 +81,18 @@ export default function FileUpload({
     setPreview(null);
     setFileName(null);
     if (inputRef.current) {
-      inputRef.current.value = ""; // Clear the input
+      inputRef.current.value = ""; 
     }
-    onFileUpload("", ""); // Notify parent that file is removed
+    onFileUpload("", ""); 
   };
+  
+  const displayedLabel = label; // The label prop is already translated when passed in
+
+  const acceptedTypesString = acceptedFileTypes.replace(/image\//g, '').toUpperCase();
 
   return (
     <div className={cn("w-full space-y-2", className)}>
-      <Label htmlFor={id} className={cn("text-sm font-medium text-foreground/80", labelClassName)}>{label}</Label>
+      <Label htmlFor={id} className={cn("text-sm font-medium text-foreground/80", labelClassName)}>{displayedLabel}</Label>
       <div
         id={`${id}-dropzone`}
         onDragEnter={handleDrag}
@@ -108,13 +116,13 @@ export default function FileUpload({
         />
         {preview ? (
           <>
-            <Image src={preview} alt="Preview" layout="fill" objectFit="contain" className="rounded-md p-2" />
+            <Image src={preview} alt="Preview" layout="fill" objectFit="contain" className="rounded-md p-2" data-ai-hint="uploaded image" />
             <Button
               variant="ghost"
               size="icon"
               onClick={(e) => { e.stopPropagation(); removePreview(); }}
               className="absolute top-2 right-2 bg-background/70 hover:bg-destructive/80 hover:text-destructive-foreground rounded-full z-10"
-              aria-label="Remove image"
+              aria-label="Remove image" // Consider translating aria-label in future
             >
               <XCircle className="h-5 w-5" />
             </Button>
@@ -126,9 +134,12 @@ export default function FileUpload({
           <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center">
             <UploadCloud className={cn('w-10 h-10 mb-3', dragActive ? 'text-primary' : 'text-muted-foreground')} />
             <p className={cn('mb-2 text-sm', dragActive ? 'text-primary' : 'text-muted-foreground')}>
+              {/* This part might need more complex translation if "Click to upload" and "or drag and drop" are separate phrases */}
               <span className="font-semibold">Click to upload</span> or drag and drop
             </p>
-            <p className="text-xs text-muted-foreground/70">Accepted: {acceptedFileTypes.replace(/image\//g, '').toUpperCase()}</p>
+            <p className="text-xs text-muted-foreground/70">
+              {t('uploadAccepted', { types: acceptedTypesString })}
+            </p>
           </div>
         )}
       </div>
