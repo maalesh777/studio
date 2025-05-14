@@ -143,7 +143,7 @@ export default function TattooGenerationPage() {
   
   return (
     <div className="space-y-12">
-      <Card className="shadow-2xl border-border bg-card">
+      <Card className="shadow-2xl border-ring bg-card">
         <CardHeader>
           <CardTitle className="text-3xl font-bold tracking-tight flex items-center">
             <Wand2 className="w-8 h-8 mr-3 text-primary" />
