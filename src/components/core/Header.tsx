@@ -1,3 +1,4 @@
+// src/components/core/Header.tsx
 "use client";
 
 import Link from 'next/link';
@@ -33,7 +34,7 @@ export default function Header() {
             <path d="M17 9l5-2.5" />
             <path d="M7 9L2 6.5" />
           </svg>
-          <span className="text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary via-sky-400 to-cyan-300">
+          <span className="text-2xl font-bold tracking-tighter animated-gradient-text">
             TattooAI:Vision
           </span>
         </Link>

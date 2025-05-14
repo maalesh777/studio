@@ -117,34 +117,72 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image:
-      linear-gradient(45deg, hsla(var(--accent) / 0.05) 25%, transparent 25%), /* Using accent color for light theme pattern */
-      linear-gradient(-45deg, hsla(var(--accent) / 0.05) 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, hsla(var(--accent) / 0.05) 75%),
-      linear-gradient(-45deg, transparent 75%, hsla(var(--accent) / 0.05) 75%);
-    background-size: 60px 60px; /* Slightly larger pattern for a softer feel */
-    background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
     z-index: -1;
-    opacity: 0.8; /* Adjusted opacity */
-    animation: futuristicPattern 120s linear infinite; /* Slower animation */
-  }
-
-  .dark body::before { /* Keep original pattern for dark mode */
     background-image:
-      linear-gradient(45deg, hsla(var(--primary) / 0.03) 25%, transparent 25%),
-      linear-gradient(-45deg, hsla(var(--primary) / 0.03) 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, hsla(var(--primary) / 0.03) 75%),
-      linear-gradient(-45deg, transparent 75%, hsla(var(--primary) / 0.03) 75%);
-    background-size: 50px 50px;
-    background-position: 0 0, 0 25px, 25px -25px, -25px 0px;
-    opacity: 0.7;
-    animation: futuristicPattern 80s linear infinite;
+      /* Layer 1 - Soft large radial gradients */
+      radial-gradient(circle at 10% 20%, hsla(var(--primary) / 0.15), transparent 35%),
+      radial-gradient(circle at 90% 80%, hsla(var(--secondary) / 0.15), transparent 35%),
+      /* Layer 2 - Smaller, more defined radial gradients */
+      radial-gradient(circle at 50% 50%, hsla(var(--accent) / 0.2), transparent 25%),
+      radial-gradient(ellipse at 20% 80%, hsla(var(--primary) / 0.25), transparent 30%),
+      radial-gradient(ellipse at 80% 30%, hsla(var(--secondary) / 0.2), transparent 30%),
+      /* Layer 3 - Linear gradients for movement and color mixing */
+      linear-gradient(33deg, hsla(var(--accent) / 0.1), transparent 40%),
+      linear-gradient(-25deg, hsla(var(--primary) / 0.1), transparent 40%);
+    animation: impossibleShapes 35s ease-in-out infinite alternate;
+    filter: blur(8px); /* Increased blur for more ethereal effect */
+    transform: scale(1.1); /* Slightly scale up to ensure edges are not visible with blur */
   }
 
+  @keyframes impossibleShapes {
+    0% {
+      background-position: 0% 0%, 20% 80%, 80% 20%, 50% 50%, 10% 30%, 70% 90%, 0% 100%;
+      background-size: 400px 400px, 350px 350px, 300px 300px, 250px 250px, 500px 500px, 400px 400px, 300px 300px;
+      opacity: 0.6;
+    }
+    25% {
+      background-position: 100% 50%, 0% 20%, 60% 100%, 30% 30%, 40% 10%, 90% 60%, 50% 0%;
+      background-size: 450px 450px, 300px 300px, 350px 350px, 280px 280px, 450px 450px, 350px 350px, 350px 350px;
+      opacity: 0.75;
+    }
+    50% {
+      background-position: 50% 100%, 80% 0%, 0% 60%, 70% 70%, 20% 80%, 50% 40%, 100% 50%;
+      background-size: 400px 400px, 350px 350px, 320px 320px, 260px 260px, 550px 550px, 420px 420px, 320px 320px;
+      opacity: 0.65;
+    }
+    75% {
+      background-position: 0% 50%, 100% 80%, 20% 0%, 90% 90%, 80% 20%, 10% 70%, 0% 0%;
+      background-size: 420px 420px, 320px 320px, 360px 360px, 270px 270px, 480px 480px, 380px 380px, 380px 380px;
+      opacity: 0.8;
+    }
+    100% {
+      background-position: 0% 0%, 20% 80%, 80% 20%, 50% 50%, 10% 30%, 70% 90%, 0% 100%;
+      background-size: 400px 400px, 350px 350px, 300px 300px, 250px 250px, 500px 500px, 400px 400px, 300px 300px;
+      opacity: 0.6;
+    }
+  }
 
-  @keyframes futuristicPattern {
-    0% { background-position: 0 0, 0 25px, 25px -25px, -25px 0px; }
-    100% { background-position: 1000px 500px, 1000px 525px, 1025px 475px, 975px 500px; }
+  .animated-gradient-text {
+    background-image: linear-gradient(
+      to right,
+      hsl(var(--primary)),
+      hsl(var(--accent)),
+      hsl(var(--secondary)),
+      hsl(var(--accent)), /* Intermediate step for smoother loop */
+      hsl(var(--primary)) /* Loop back to start */
+    );
+    background-size: 300% auto; /* Increased size for smoother transition */
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* For Safari */
+    color: transparent; /* Fallback */
+    animation: gradientTextFlow 8s ease-in-out infinite;
+  }
+
+  @keyframes gradientTextFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 }
 
