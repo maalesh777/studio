@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [ // For theme switching PWA support
     { media: '(prefers-color-scheme: light)', color: 'hsl(40 30% 96%)' }, // Corresponds to light theme --background
-    { media: '(prefers-color-scheme: dark)', color: 'hsl(222 84% 4.9%)' }, // Corresponds to dark theme --background
+    { media: '(prefers-color-scheme: dark)', color: 'hsl(225 50% 4.7%)' }, // Corresponds to dark theme --background
   ],
 };
 
@@ -38,13 +38,15 @@ export default function RootLayout({
   return (
     // The lang attribute will be set dynamically by SettingsContext on the client
     // The class (for theme) will also be set dynamically by SettingsContext
-    <html lang="de" className="light"> 
+    <html lang="de" className="light">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AppProviders>
           <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex-grow container mx-auto px-4 py-8 sm:px-6 lg:px-8 dynamic-wavy-gradient-background">
-              {children}
+            <main className="flex-grow dynamic-wavy-gradient-background">
+              <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+                {children}
+              </div>
             </main>
             <Toaster />
           </div>
