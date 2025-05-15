@@ -55,39 +55,40 @@
     --background: 222 84% 4.9%; /* Dark Space Blue */
     --foreground: 210 40% 98%; /* Almost White */
 
-    --card: 222 80% 10%; /* Slightly Lighter Dark Card */
-    --card-foreground: 210 40% 98%;
+    --card: 220 25% 7%; /* Very Dark Desaturated Blue - for card background */
+    --card-foreground: 210 40% 96%; /* Bright white for card text */
 
     --popover: 222 80% 8%; /* Dark Popover */
     --popover-foreground: 210 40% 98%;
 
-    --primary: 180 90% 45%; /* Vivid Teal */
-    --primary-foreground: 222 84% 4.9%; /* Dark for text on Teal */
+    --primary: 180 90% 45%; /* Vivid Teal - Main Neon Color */
+    --primary-foreground: 222 84% 4.9%; /* Dark for text on Teal buttons */
 
-    --secondary: 217 32.6% 17.5%; /* Muted Blue/Grey */
+    --secondary: 210 80% 55%; /* Bright Saturated Blue - Complements Teal for gradients */
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217 32.6% 25%; /* Lighter Muted for less emphasis */
     --muted-foreground: 210 40% 70%; /* Lighter Muted Text */
 
-    --accent: 180 90% 45%; /* Vivid Teal as accent */
+    --accent: 180 90% 50%; /* Slightly brighter Teal for highlights and accents */
     --accent-foreground: 222 84% 4.9%;
 
     --destructive: 0 72.2% 50.6%; /* Red */
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 32.6% 22%; /* Muted Blue/Grey Border, slightly more visible */
+    --border: 217 32.6% 22%; /* Muted Blue/Grey Border for general UI, card border is specialized below */
     --input: 217 32.6% 12%; /* Darker Muted Blue/Grey Input Background */
     --ring: 180 90% 55%; /* Lighter Teal for Focus Ring */
 
-    --chart-1: 180 90% 45%;
-    --chart-2: 210 80% 55%;
-    --chart-3: 260 85% 65%;
-    --chart-4: 30 80% 55%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 180 90% 45%; /* Teal */
+    --chart-2: 210 80% 55%; /* Bright Blue */
+    --chart-3: 280 70% 60%; /* Electric Purple/Violet */
+    --chart-4: 320 75% 60%; /* Pink/Magenta */
+    --chart-5: 50 85% 55%;  /* Gold/Yellow */
+
 
     /* Sidebar specific variables for dark mode */
-    --sidebar-background: 222 80% 7%; /* Slightly darker than card for more depth */
+    --sidebar-background: 222 80% 7%; 
     --sidebar-foreground: 210 40% 95%;
     --sidebar-primary: 180 90% 45%;
     --sidebar-primary-foreground: 222 84% 4.9%;
@@ -230,22 +231,33 @@
   }
 
   .label-pastel-1 {
-    background-color: hsl(var(--chart-1) / 0.7); /* Muted Terracotta with 70% opacity */
+    background-color: hsl(var(--chart-1) / 0.7); 
     border-color: hsl(var(--chart-1));
   }
   .label-pastel-2 {
-    background-color: hsl(var(--chart-2) / 0.7); /* Muted Sage/Grey with 70% opacity */
+    background-color: hsl(var(--chart-2) / 0.7); 
     border-color: hsl(var(--chart-2));
   }
   .label-pastel-3 {
-    background-color: hsl(var(--chart-3) / 0.7); /* Warm Grey with 70% opacity */
+    background-color: hsl(var(--chart-3) / 0.7); 
     border-color: hsl(var(--chart-3));
   }
   .label-pastel-4 {
-    background-color: hsl(var(--chart-4) / 0.7); /* Muted Soft Blue with 70% opacity */
+    background-color: hsl(var(--chart-4) / 0.7); 
     border-color: hsl(var(--chart-4));
   }
 
+  .dark .card {
+    /* Override default border and shadow for a neon effect in dark mode */
+    border-color: hsl(var(--primary) / 0.75) !important; /* More vibrant border, ensure it overrides */
+    /* Neon glow effect */
+    box-shadow:
+      0 0 7px hsl(var(--primary) / 0.6),  /* Inner glow */
+      0 0 15px hsl(var(--primary) / 0.4), /* Middle glow */
+      0 0 25px hsl(var(--primary) / 0.2); /* Outer halo */
+    /* Ensure card background is fully opaque to make the glow pop */
+    background-color: hsl(var(--card)) !important; /* Ensure this overrides bg-card/opacity styles */
+  }
 }
 
 /* Custom scrollbar */
