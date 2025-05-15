@@ -37,6 +37,12 @@ export const translations = {
     newReferenceImageRequired: 'Neues Referenzbild zur Verfeinerung (Erforderlich)',
     designUpdated: 'Design aktualisiert!',
     refineWithImage: 'Mit Bild verfeinern',
+    generateImageButton: 'Bild generieren',
+    generatingImage: 'Bild wird generiert...',
+    generatedTattooImageAlt: 'Generiertes Tattoo-Bild für Vorschlag {proposalNumber}',
+    proposalRefinedAndImageGenerated: 'Vorschlag verfeinert & Bild generiert',
+    proposalRefinedDescription: 'Der Vorschlag und das zugehörige Bild wurden aktualisiert.',
+
 
     // Library Page
     myDesignLibrary: 'Meine Designbibliothek',
@@ -54,6 +60,7 @@ export const translations = {
     deleteWarning: 'Diese Aktion kann nicht rückgängig gemacht werden. Dadurch wird dieses Tattoo-Design dauerhaft aus deiner Bibliothek entfernt.',
     cancel: 'Abbrechen',
     referenceImageAlt: "Referenzbild",
+    generatedImageAlt: "Generiertes Tattoo-Bild",
 
 
     // AR Preview Page
@@ -107,6 +114,11 @@ export const translations = {
     designSavedDescription: 'Sieh es in deiner Bibliothek an.',
     designDeleted: 'Design gelöscht',
     designDeletedDescription: 'Das Tattoo-Design wurde aus deiner Bibliothek entfernt.',
+    imageGeneratedSuccessTitle: 'Bild generiert!',
+    imageGeneratedSuccessDescription: 'Dein Tattoo-Bild wurde erfolgreich erstellt.',
+    imageGeneratedErrorTitle: 'Bildgenerierung fehlgeschlagen',
+    imageGeneratedErrorDescription: 'Das Bild für dein Tattoo konnte nicht erstellt werden. Das KI-Modell ist möglicherweise nicht verfügbar oder der Inhalt wurde blockiert. Bitte versuche es später erneut oder mit einer anderen Beschreibung.',
+
   },
   en: {
     // Header
@@ -141,6 +153,11 @@ export const translations = {
     newReferenceImageRequired: 'New Reference Image for Refinement (Required)',
     designUpdated: 'Design Updated!',
     refineWithImage: 'Refine with Image',
+    generateImageButton: 'Generate Image',
+    generatingImage: 'Generating image...',
+    generatedTattooImageAlt: 'Generated tattoo image for proposal {proposalNumber}',
+    proposalRefinedAndImageGenerated: 'Proposal Refined & Image Generated',
+    proposalRefinedDescription: 'The proposal and its associated image have been updated.',
     
 
     // Library Page
@@ -159,6 +176,8 @@ export const translations = {
     deleteWarning: 'This action cannot be undone. This will permanently delete this tattoo design from your library.',
     cancel: 'Cancel',
     referenceImageAlt: "Reference image",
+    generatedImageAlt: "Generated tattoo image",
+
 
     // AR Preview Page
     arPageTitle: 'Augmented Reality Tattoo Preview',
@@ -212,6 +231,10 @@ export const translations = {
     designSavedDescription: 'View it in your Library.',
     designDeleted: 'Design Deleted',
     designDeletedDescription: 'The tattoo design has been removed from your library.',
+    imageGeneratedSuccessTitle: 'Image Generated!',
+    imageGeneratedSuccessDescription: 'Your tattoo image has been successfully created.',
+    imageGeneratedErrorTitle: 'Image Generation Failed',
+    imageGeneratedErrorDescription: 'Could not generate the image for your tattoo. The AI model might be unavailable or the content was blocked. Please try again later or with a different description.',
   },
 };
 

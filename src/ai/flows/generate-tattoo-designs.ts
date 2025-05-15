@@ -28,7 +28,7 @@ const GenerateTattooDesignsInputSchema = z.object({
 export type GenerateTattooDesignsInput = z.infer<typeof GenerateTattooDesignsInputSchema>;
 
 const GenerateTattooDesignsOutputSchema = z.object({
-  designProposals: z.array(z.string()).describe('An array of tattoo design proposals, each described as a string.'),
+  designProposals: z.array(z.string()).describe('Ein Array von Tattoo-Design-Vorschlägen in deutscher Sprache, jeder als String beschrieben.'),
 });
 
 export type GenerateTattooDesignsOutput = z.infer<typeof GenerateTattooDesignsOutputSchema>;
@@ -75,11 +75,11 @@ const generateTattooDesignsPrompt = ai.definePrompt({
   To consider 'geometric patterns': \\{{incorporateElementTool element='geometric patterns' reason='The user mentioned geometric as a keyword.'}}
   The LLM will then receive a true/false response from the tool and can use that information to generate the design proposals.
 
-  Based on the user input, generate three different tattoo design proposals as strings inside a JSON array.
+  Based on the user input, generate three different tattoo design proposals as strings inside a JSON array, in German.
   Each design should be distinct and reflect the user's preferences.
   Remember to incorporate elements from the description, keywords, and style preferences as appropriate.
   Consider placement when generating designs.
-  Follow JSON schema: {{$outputSchema}}.
+  Follow JSON schema: {{$outputSchema}}. Output must be in German.
   `, 
 });
 
@@ -94,4 +94,3 @@ const generateTattooDesignsFlow = ai.defineFlow(
     return output!;
   }
 );
-

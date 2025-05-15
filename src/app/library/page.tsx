@@ -81,9 +81,13 @@ export default function LibraryPage() {
         {savedDesigns.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map(design => (
           <Card key={design.id} className="flex flex-col shadow-lg hover:shadow-primary/30 transition-shadow duration-300 bg-card/90">
             <CardHeader>
-              <CardTitle className="truncate">{t('designIdea')}</CardTitle>
-              {design.referenceImage && (
-                <div className="mt-2 relative h-40 w-full rounded-md overflow-hidden border border-border">
+              <CardTitle className="truncate">{design.description.substring(0, 50)}{design.description.length > 50 ? "..." : ""}</CardTitle>
+              {design.generatedImageUri ? (
+                <div className="mt-2 relative aspect-square w-full rounded-md overflow-hidden border border-border">
+                  <Image src={design.generatedImageUri} alt={t('generatedImageAlt')} layout="fill" objectFit="contain" data-ai-hint="tattoo image" />
+                </div>
+              ) : design.referenceImage && (
+                <div className="mt-2 relative aspect-square w-full rounded-md overflow-hidden border border-border">
                   <Image src={design.referenceImage} alt={t('referenceImageAlt')} layout="fill" objectFit="cover" data-ai-hint="tattoo reference"/>
                 </div>
               )}

@@ -15,10 +15,11 @@ import FileUpload from '@/components/core/FileUpload';
 import LoadingSpinner from '@/components/core/LoadingSpinner';
 import { generateTattooDesigns, GenerateTattooDesignsInput } from '@/ai/flows/generate-tattoo-designs';
 import { refineTattooDesigns, RefineTattooDesignsInput } from '@/ai/flows/refine-tattoo-designs';
+import { generateTattooImage, GenerateTattooImageInput } from '@/ai/flows/generate-tattoo-image'; // New import
 import { useToast } from '@/hooks/use-toast';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import type { TattooDesign, GeneratedProposal } from '@/lib/types';
-import { Wand2, Edit3, Save, RefreshCcw, CheckCircle2 } from 'lucide-react';
+import { Wand2, Edit3, Save, RefreshCcw, CheckCircle2, Image as ImageIcon } from 'lucide-react'; // Added ImageIcon
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogTrigger } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Image from 'next/image'; 
@@ -30,8 +31,6 @@ const tattooStyles = [
   "Blackwork", "Illustrative", "Geometric", "Minimalist", "Abstract", "Dotwork", "Sketch"
 ];
 
-// Form schemas remain in English for consistency in code, labels will be translated.
-// Zod messages are not easily translated without extra libraries or more complex setup.
 const formSchema = z.object({
   description: z.string().min(10, { message: "Please describe your tattoo idea in at least 10 characters." }).max(1000),
   stylePreferences: z.string().min(1, { message: "Please select a style." }),
@@ -46,11 +45,12 @@ const refineFormSchema = z.object({
 export default function TattooGenerationPage() {
   const { t } = useSettings();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // General loading for initial proposals
+  const [isProcessingImage, setIsProcessingImage] = useState(false); // For any image generation/refinement
   const [generatedProposals, setGeneratedProposals] = useState<GeneratedProposal[]>([]);
   const [referenceImageDataUri, setReferenceImageDataUri] = useState<string>("");
-  const [refiningProposal, setRefiningProposal] = useState<GeneratedProposal | null>(null);
-  const [refinedDescription, setRefinedDescription] = useState<string>("");
+  
+  const [refiningProposalData, setRefiningProposalData] = useState<{ proposal: GeneratedProposal; originalDescription: string; index: number } | null>(null);
   const [refineReferenceImageUri, setRefineReferenceImageUri] = useState<string>("");
 
 
@@ -84,7 +84,7 @@ export default function TattooGenerationPage() {
       };
       const result = await generateTattooDesigns(input);
       if (result && result.designProposals) {
-        setGeneratedProposals(result.designProposals.map(desc => ({ description: desc })));
+        setGeneratedProposals(result.designProposals.map(desc => ({ description: desc, isGeneratingImage: false })));
         toast({ title: t('designsGenerated'), description: t('designsGeneratedDescription') });
       } else {
         throw new Error("No proposals returned.");
@@ -101,8 +101,39 @@ export default function TattooGenerationPage() {
     }
   };
 
+  const handleGenerateImageForProposal = async (proposalIndex: number) => {
+    const proposal = generatedProposals[proposalIndex];
+    if (!proposal) return;
+
+    setGeneratedProposals(prev => 
+      prev.map((p, i) => i === proposalIndex ? { ...p, isGeneratingImage: true } : p)
+    );
+    setIsProcessingImage(true);
+
+    try {
+      const imageResult = await generateTattooImage({ prompt: proposal.description });
+      setGeneratedProposals(prev => 
+        prev.map((p, i) => i === proposalIndex ? { ...p, generatedImageUri: imageResult.imageDataUri, isGeneratingImage: false } : p)
+      );
+      toast({ title: t('imageGeneratedSuccessTitle'), description: t('imageGeneratedSuccessDescription')});
+    } catch (error) {
+      console.error("Error generating image for proposal:", error);
+      toast({
+        variant: "destructive",
+        title: t('imageGeneratedErrorTitle'),
+        description: t('imageGeneratedErrorDescription') + ` Error: ${String(error instanceof Error ? error.message : error)}`,
+      });
+      setGeneratedProposals(prev => 
+        prev.map((p, i) => i === proposalIndex ? { ...p, isGeneratingImage: false } : p)
+      );
+    } finally {
+      setIsProcessingImage(false);
+    }
+  };
+
+
   const handleRefineSubmit: SubmitHandler<z.infer<typeof refineFormSchema>> = async (values) => {
-    if (!refiningProposal || !refineReferenceImageUri) { 
+    if (!refiningProposalData || !refineReferenceImageUri) { 
         toast({ 
             variant: "destructive", 
             title: t('missingImageForRefinement'), 
@@ -110,24 +141,62 @@ export default function TattooGenerationPage() {
         });
         return;
     }
-    setIsLoading(true);
+    setIsProcessingImage(true);
+    const currentRefiningIdx = refiningProposalData.index;
+    const originalProposalDesc = refiningProposalData.originalDescription;
+
     try {
       const refineInput: RefineTattooDesignsInput = { 
-        baseDesignDescription: refiningProposal.description + (values.additionalInfo ? ` Additional notes: ${values.additionalInfo}` : ""),
+        baseDesignDescription: refiningProposalData.proposal.description + (values.additionalInfo ? ` Zusätzliche Anmerkungen: ${values.additionalInfo}` : ""),
         referenceImageDataUri: refineReferenceImageUri, 
       };
 
-      const result = await refineTattooDesigns(refineInput); 
+      const refinementResult = await refineTattooDesigns(refineInput); 
       
-      if (result && result.refinedDesignDescription) {
-        setRefinedDescription(result.refinedDesignDescription);
-        setGeneratedProposals(prev => prev.map(p => 
-            p.description === refiningProposal.description ? 
-            { ...p, description: result.refinedDesignDescription, refinedImageGenerationPrompt: result.imageGenerationPrompt } : p
-        ));
-        setRefiningProposal(prev => prev ? {...prev, description: result.refinedDesignDescription } : null);
+      if (refinementResult && refinementResult.refinedDesignDescription) {
+        let newImageUri: string | undefined = refiningProposalData.proposal.generatedImageUri; // Keep old if new fails
+        if (refinementResult.imageGenerationPrompt) {
+          try {
+            const imageGenResult = await generateTattooImage({ prompt: refinementResult.imageGenerationPrompt });
+            newImageUri = imageGenResult.imageDataUri;
+            toast({ title: t('proposalRefinedAndImageGenerated'), description: t('proposalRefinedDescription')});
+          } catch (imgError) {
+            console.error("Error generating image after refinement:", imgError);
+            toast({
+              variant: "destructive",
+              title: t('imageGeneratedErrorTitle'),
+              description: t('imageGeneratedErrorDescription') + ` Error: ${String(imgError instanceof Error ? imgError.message : imgError)}`,
+            });
+          }
+        } else {
+            toast({ title: t('designRefined'), description: t('designRefinedDescription') });
+        }
+        
+        setGeneratedProposals(prev => {
+          const newProposals = [...prev];
+          // Ensure we are updating the correct proposal based on its original state when dialog opened
+          if (newProposals[currentRefiningIdx] && newProposals[currentRefiningIdx].description === originalProposalDesc) {
+             newProposals[currentRefiningIdx] = {
+                ...newProposals[currentRefiningIdx],
+                description: refinementResult.refinedDesignDescription,
+                refinedImageGenerationPrompt: refinementResult.imageGenerationPrompt,
+                generatedImageUri: newImageUri,
+             };
+          }
+          return newProposals;
+        });
+        
+        // Update the proposal in the dialog for immediate reflection
+        setRefiningProposalData(prevData => prevData ? {
+            ...prevData,
+            proposal: {
+                ...prevData.proposal,
+                description: refinementResult.refinedDesignDescription,
+                generatedImageUri: newImageUri,
+                refinedImageGenerationPrompt: refinementResult.imageGenerationPrompt,
+            }
+        } : null);
 
-        toast({ title: t('designRefined'), description: t('designRefinedDescription') });
       } else {
         throw new Error("Refinement did not return a description.");
       }
@@ -139,7 +208,7 @@ export default function TattooGenerationPage() {
         description: String(error instanceof Error ? error.message : error) || t('refinementFailedDescription') 
       });
     } finally {
-      setIsLoading(false);
+      setIsProcessingImage(false);
     }
   };
 
@@ -150,6 +219,7 @@ export default function TattooGenerationPage() {
       stylePreferences: form.getValues('stylePreferences'),
       keywords: form.getValues('keywords'),
       referenceImage: referenceImageDataUri || undefined, 
+      generatedImageUri: proposal.generatedImageUri, // Save the generated image
       createdAt: new Date().toISOString(),
     };
     setSavedDesigns(prevDesigns => [...prevDesigns, newDesign]);
@@ -238,7 +308,7 @@ export default function TattooGenerationPage() {
                 id="generate-reference-image"
               />
 
-              <Button type="submit" disabled={isLoading} size="lg" className={cn("w-full md:w-auto text-lg", buttonAnimationClasses)}>
+              <Button type="submit" disabled={isLoading || isProcessingImage} size="lg" className={cn("w-full md:w-auto text-lg", buttonAnimationClasses)}>
                 {isLoading ? <LoadingSpinner className="mr-2" /> : <Wand2 className="mr-2 h-5 w-5" />}
                 {t('generateDesigns')}
               </Button>
@@ -255,80 +325,102 @@ export default function TattooGenerationPage() {
               <Card key={index} className="flex flex-col shadow-lg hover:shadow-primary/30 transition-shadow duration-300 bg-card/90">
                 <CardHeader>
                   <CardTitle>{t('proposal')} {index + 1}</CardTitle>
+                   {proposal.generatedImageUri && (
+                    <div className="mt-4 relative aspect-square w-full rounded-md overflow-hidden border border-border">
+                      <Image src={proposal.generatedImageUri} alt={t('generatedTattooImageAlt', { proposalNumber: (index + 1).toString() })} layout="fill" objectFit="contain" data-ai-hint="tattoo design" />
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent className="flex-grow">
                   <p className="text-muted-foreground">{proposal.description}</p>
                 </CardContent>
-                <CardFooter className="flex flex-col sm:flex-row justify-between gap-2 pt-4">
-                  <Dialog onOpenChange={(open) => {
-                     if (!open) { 
-                        setRefiningProposal(null);
-                        setRefineReferenceImageUri("");
-                        refineForm.reset();
-                        setRefinedDescription("");
-                      }
-                  }}>
-                    <DialogTrigger asChild>
-                       <Button variant="outline" className={cn(buttonAnimationClasses)} onClick={() => {
-                          setRefiningProposal(proposal);
-                          setRefinedDescription(""); 
-                          setRefineReferenceImageUri(""); 
-                          refineForm.reset({ additionalInfo: "" });
-                        }}>
-                        <Edit3 className="mr-2 h-4 w-4" /> {t('refine')}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[525px] bg-background border-border">
-                      <DialogHeader>
-                        <DialogTitle className="text-xl">{t('refineTattooProposal')}</DialogTitle>
-                        <DialogDescription>
-                          {t('refineTattooProposalDescription', { baseDescription: refiningProposal?.description.substring(0,100) + "..." || ""})}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <Form {...refineForm}>
-                        <form onSubmit={refineForm.handleSubmit(handleRefineSubmit)} className="space-y-4">
-                           <FormField
-                              control={refineForm.control}
-                              name="additionalInfo"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>{t('additionalNotes')}</FormLabel>
-                                  <FormControl>
-                                    <Textarea placeholder={t('additionalNotesPlaceholder')} {...field} rows={3} className="bg-input/50 border-input focus:border-primary"/>
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
+                <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-2 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 w-full">
+                    <Dialog onOpenChange={(open) => {
+                       if (!open) { 
+                          setRefiningProposalData(null);
+                          setRefineReferenceImageUri("");
+                          refineForm.reset();
+                        }
+                    }}>
+                      <DialogTrigger asChild>
+                         <Button variant="outline" className={cn("w-full sm:flex-1", buttonAnimationClasses)} onClick={() => {
+                            setRefiningProposalData({ proposal: {...proposal}, originalDescription: proposal.description, index });
+                            setRefineReferenceImageUri(""); 
+                            refineForm.reset({ additionalInfo: "" });
+                          }}>
+                          <Edit3 className="mr-2 h-4 w-4" /> {t('refine')}
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[525px] bg-background border-border">
+                        <DialogHeader>
+                          <DialogTitle className="text-xl">{t('refineTattooProposal')}</DialogTitle>
+                           {refiningProposalData && (
+                            <>
+                            <DialogDescription>
+                                {t('refineTattooProposalDescription', { baseDescription: refiningProposalData.proposal.description.substring(0,100) + "..." || ""})}
+                            </DialogDescription>
+                            {refiningProposalData.proposal.generatedImageUri && (
+                                <div className="mt-2 relative h-40 w-full rounded-md overflow-hidden border border-border">
+                                <Image src={refiningProposalData.proposal.generatedImageUri} alt={t('generatedTattooImageAlt', { proposalNumber: (refiningProposalData.index + 1).toString() })} layout="fill" objectFit="contain" data-ai-hint="tattoo sketch"/>
+                                </div>
+                            )}
+                            </>
+                           )}
+                        </DialogHeader>
+                        <Form {...refineForm}>
+                          <form onSubmit={refineForm.handleSubmit(handleRefineSubmit)} className="space-y-4">
+                             <FormField
+                                control={refineForm.control}
+                                name="additionalInfo"
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>{t('additionalNotes')}</FormLabel>
+                                    <FormControl>
+                                      <Textarea placeholder={t('additionalNotesPlaceholder')} {...field} rows={3} className="bg-input/50 border-input focus:border-primary"/>
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            <FileUpload
+                              label={t('newReferenceImageRequired')}
+                              labelClassName="label-base-style label-pastel-1" 
+                              onFileUpload={(_fileName, dataUri) => setRefineReferenceImageUri(dataUri)}
+                              id="refine-reference-image"
                             />
-                          <FileUpload
-                            label={t('newReferenceImageRequired')}
-                            labelClassName="label-base-style label-pastel-1" 
-                            onFileUpload={(_fileName, dataUri) => setRefineReferenceImageUri(dataUri)}
-                            id="refine-reference-image"
-                          />
-                           {refinedDescription && (
-                            <Alert className="mt-4 border-primary/50">
-                                <CheckCircle2 className="h-4 w-4 text-primary" />
-                                <AlertTitle className="text-primary">{t('designUpdated')}</AlertTitle>
-                                <AlertDescription>
-                                {refinedDescription}
-                                </AlertDescription>
-                            </Alert>
-                          )}
-                          <DialogFooter>
-                            <Button type="submit" disabled={isLoading || !refineReferenceImageUri} className={cn(buttonAnimationClasses)}>
-                              {isLoading ? <LoadingSpinner className="mr-2" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
-                              {t('refineWithImage')}
-                            </Button>
-                          </DialogFooter>
-                        </form>
-                      </Form>
-                    </DialogContent>
-                  </Dialog>
+                            <DialogFooter>
+                              <Button type="submit" disabled={isProcessingImage || !refineReferenceImageUri} className={cn("w-full", buttonAnimationClasses)}>
+                                {isProcessingImage && refiningProposalData?.index === index ? <LoadingSpinner className="mr-2" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
+                                {t('refineWithImage')}
+                              </Button>
+                            </DialogFooter>
+                          </form>
+                        </Form>
+                      </DialogContent>
+                    </Dialog>
 
-                  <Button onClick={() => handleSaveDesign(proposal)} className={cn(buttonAnimationClasses)}>
-                    <Save className="mr-2 h-4 w-4" /> {t('save')}
-                  </Button>
+                    <Button onClick={() => handleSaveDesign(proposal)} className={cn("w-full sm:flex-1", buttonAnimationClasses)} disabled={isProcessingImage}>
+                      <Save className="mr-2 h-4 w-4" /> {t('save')}
+                    </Button>
+                  </div>
+                </CardFooter>
+                <CardFooter className="pt-2">
+                 {!proposal.generatedImageUri && !proposal.isGeneratingImage && (
+                    <Button 
+                      onClick={() => handleGenerateImageForProposal(index)} 
+                      className={cn("w-full", buttonAnimationClasses)}
+                      disabled={isProcessingImage}
+                      variant="secondary"
+                    >
+                      <ImageIcon className="mr-2 h-4 w-4" /> {t('generateImageButton')}
+                    </Button>
+                  )}
+                  {proposal.isGeneratingImage && (
+                    <div className="w-full flex justify-center items-center py-2">
+                        <LoadingSpinner className="mr-2" /> {t('generatingImage')}
+                    </div>
+                  )}
                 </CardFooter>
               </Card>
             ))}

@@ -1,3 +1,4 @@
+
 export interface TattooDesign {
   id: string;
   description: string;
@@ -11,5 +12,7 @@ export interface TattooDesign {
 
 export interface GeneratedProposal {
   description: string;
-  // Potentially add other fields if AI provides more structured output
+  generatedImageUri?: string;
+  isGeneratingImage?: boolean;
+  refinedImageGenerationPrompt?: string; 
 }
