@@ -52,49 +52,49 @@
   }
 
   .dark {
-    --background: 222 84% 4.9%; /* Dark Space Blue */
-    --foreground: 210 40% 98%; /* Almost White */
+    --background: 225 50% 4.7%; /* Darker Marine Blue */
+    --foreground: 210 20% 96%; /* Off-White for high contrast */
 
-    --card: 220 25% 7%; /* Very Dark Desaturated Blue - for card background */
-    --card-foreground: 210 40% 96%; /* Bright white for card text */
+    --card: 225 35% 7%; /* Dark Marine Blue Card base */
+    --card-foreground: 210 20% 96%;
 
-    --popover: 222 80% 8%; /* Dark Popover */
-    --popover-foreground: 210 40% 98%;
+    --popover: 225 45% 6%; /* Similar to background but slightly distinct */
+    --popover-foreground: 210 20% 96%;
 
     --primary: 180 90% 45%; /* Vivid Teal - Main Neon Color */
-    --primary-foreground: 222 84% 4.9%; /* Dark for text on Teal buttons */
+    --primary-foreground: 225 50% 4.7%; /* To match new background for text on primary buttons */
 
-    --secondary: 210 80% 55%; /* Bright Saturated Blue - Complements Teal for gradients */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 205 65% 45%; /* A strong, complementary blue for gradients */
+    --secondary-foreground: 210 20% 96%;
 
-    --muted: 217 32.6% 25%; /* Lighter Muted for less emphasis */
-    --muted-foreground: 210 40% 70%; /* Lighter Muted Text */
+    --muted: 220 30% 15%; /* Muted dark blue */
+    --muted-foreground: 210 20% 75%; /* Softer muted text */
 
-    --accent: 180 90% 50%; /* Slightly brighter Teal for highlights and accents */
-    --accent-foreground: 222 84% 4.9%;
+    --accent: 180 90% 50%; /* Slightly brighter Teal for highlights */
+    --accent-foreground: 225 50% 4.7%; /* To match new background */
 
-    --destructive: 0 72.2% 50.6%; /* Red */
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 60% 48%; /* Deep Red */
+    --destructive-foreground: 0 0% 98%; /* White/very light for destructive text */
 
-    --border: 217 32.6% 22%; /* Muted Blue/Grey Border for general UI, card border is specialized below */
-    --input: 217 32.6% 12%; /* Darker Muted Blue/Grey Input Background */
+    --border: 220 30% 11%; /* Dark marine border */
+    --input: 220 30% 8%; /* Dark marine input background */
     --ring: 180 90% 55%; /* Lighter Teal for Focus Ring */
 
     --chart-1: 180 90% 45%; /* Teal */
-    --chart-2: 210 80% 55%; /* Bright Blue */
+    --chart-2: 205 65% 45%; /* Strong Blue */
     --chart-3: 280 70% 60%; /* Electric Purple/Violet */
     --chart-4: 320 75% 60%; /* Pink/Magenta */
     --chart-5: 50 85% 55%;  /* Gold/Yellow */
 
 
     /* Sidebar specific variables for dark mode */
-    --sidebar-background: 222 80% 7%; 
-    --sidebar-foreground: 210 40% 95%;
+    --sidebar-background: 225 40% 6%; 
+    --sidebar-foreground: 210 20% 92%;
     --sidebar-primary: 180 90% 45%;
-    --sidebar-primary-foreground: 222 84% 4.9%;
+    --sidebar-primary-foreground: 225 40% 6%;
     --sidebar-accent: 180 90% 45%;
-    --sidebar-accent-foreground: 222 84% 4.9%;
-    --sidebar-border: 217 32.6% 18%;
+    --sidebar-accent-foreground: 225 40% 6%;
+    --sidebar-border: 220 30% 9%;
     --sidebar-ring: 180 90% 55%;
   }
 }
@@ -276,3 +276,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.7);
 }
+
