@@ -4,7 +4,7 @@
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useEffect, useState } from 'react'; 
+import { useEffect, useState } from 'react';
 import { SettingsProvider } from '@/contexts/SettingsContext';
 
 // Firebase imports
@@ -44,14 +44,14 @@ export default function AppProviders({ children }: AppProvidersProps) {
     // Ensure this runs only on the client and Firebase hasn't been initialized yet.
     if (typeof window !== 'undefined' && !getApps().length) {
       firebaseAppInstance = initializeApp(firebaseConfig);
-      
+
       if (firebaseAppInstance) {
         try {
           getAnalytics(firebaseAppInstance);
-        } catch (analyticsError) {
+        } catch (analyticsError: any) {
           console.error("Failed to initialize Firebase Analytics:", analyticsError);
         }
-        
+
         // Initialize App Check
         try {
           initializeAppCheck(firebaseAppInstance, {
@@ -59,7 +59,7 @@ export default function AppProviders({ children }: AppProvidersProps) {
             isTokenAutoRefreshEnabled: true
           });
           // console.log("Firebase App Check initialized successfully.");
-        } catch (appCheckError) {
+        } catch (appCheckError: any) {
           console.error("Failed to initialize Firebase App Check:", appCheckError);
           // You might want to display a message to the user or disable
           // features that rely on App Check if initialization fails.
