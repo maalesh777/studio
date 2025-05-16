@@ -4,7 +4,7 @@
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useEffect, useState } from 'react'; // Added useEffect
+import { useEffect, useState } from 'react'; 
 import { SettingsProvider } from '@/contexts/SettingsContext';
 
 // Firebase imports
@@ -45,14 +45,25 @@ export default function AppProviders({ children }: AppProvidersProps) {
     if (typeof window !== 'undefined' && !getApps().length) {
       firebaseAppInstance = initializeApp(firebaseConfig);
       
-      // Initialize Analytics
       if (firebaseAppInstance) {
-        getAnalytics(firebaseAppInstance);
+        try {
+          getAnalytics(firebaseAppInstance);
+        } catch (analyticsError) {
+          console.error("Failed to initialize Firebase Analytics:", analyticsError);
+        }
         
         // Initialize App Check
         initializeAppCheck(firebaseAppInstance, {
           provider: new ReCaptchaV3Provider('6LfQCj0rAAAAANKHeF1l_mXodEUBOvBe1lD_mKUv'),
           isTokenAutoRefreshEnabled: true
+        })
+        .then(() => {
+          // console.log("Firebase App Check initialized successfully.");
+        })
+        .catch((appCheckError) => {
+          console.error("Failed to initialize Firebase App Check:", appCheckError);
+          // You might want to display a message to the user or disable
+          // features that rely on App Check if initialization fails.
         });
       }
     }
