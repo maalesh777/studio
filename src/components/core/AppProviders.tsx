@@ -53,18 +53,17 @@ export default function AppProviders({ children }: AppProvidersProps) {
         }
         
         // Initialize App Check
-        initializeAppCheck(firebaseAppInstance, {
-          provider: new ReCaptchaV3Provider('6LfQCj0rAAAAANKHeF1l_mXodEUBOvBe1lD_mKUv'),
-          isTokenAutoRefreshEnabled: true
-        })
-        .then(() => {
+        try {
+          initializeAppCheck(firebaseAppInstance, {
+            provider: new ReCaptchaV3Provider('6LfQCj0rAAAAANKHeF1l_mXodEUBOvBe1lD_mKUv'),
+            isTokenAutoRefreshEnabled: true
+          });
           // console.log("Firebase App Check initialized successfully.");
-        })
-        .catch((appCheckError) => {
+        } catch (appCheckError) {
           console.error("Failed to initialize Firebase App Check:", appCheckError);
           // You might want to display a message to the user or disable
           // features that rely on App Check if initialization fails.
-        });
+        }
       }
     }
   }, []); // Empty dependency array ensures this runs once on mount
