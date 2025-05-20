@@ -1,7 +1,6 @@
-
+import { useState, useEffect, useRef } from 'react';
 "use client";
 
-import { useState, useEffect, useRef } from 'react'; // Added useRef
 import { useSearchParams } from 'next/navigation';
 import FileUpload from '@/components/core/FileUpload';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import LoadingSpinner from '@/components/core/LoadingSpinner';
 import { arPreviewTattoo, ARPreviewTattooInput } from '@/ai/flows/ar-preview-tattoo';
 import { useToast } from '@/hooks/use-toast';
-import Image from 'next/image';
+import Image from 'next/image'; // Corrected import
 import { Camera as CameraIcon, Sparkles, AlertTriangle, Video } from 'lucide-react'; // Renamed Camera to CameraIcon
 import useLocalStorage from '@/hooks/useLocalStorage';
 import type { TattooDesign } from '@/lib/types';
