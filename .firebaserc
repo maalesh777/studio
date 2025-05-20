@@ -1,5 +1,11 @@
 {
   "projects": {
     "default": "tattoo-ai-f582e"
+  },
+  "targets": {},
+  "etags": {
+    "tattoo-ai-f582e": {
+      "extensionInstances": {}
+    }
   }
 }

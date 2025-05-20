@@ -1,0 +1,6 @@
+{
+  "firebase_hosting": {
+    "deploymentHostingUrl": "https://tattoo-ai-f582e.web.app"
+  },
+  "cloud_run_deploy": {}
+}

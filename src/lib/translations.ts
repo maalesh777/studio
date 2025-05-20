@@ -8,7 +8,7 @@ export const translations = {
     // Header
     generate: 'Generieren',
     library: 'Bibliothek',
-    arPreview: 'AR Vorschau',
+    visualizer: 'Visualizer', // Changed from arPreview
     settings: 'Einstellungen',
     appTitle: 'TattooAI:Vision',
     appDescription: 'Revolutionäre KI-gestützte Tattoo-Design-App mit futuristischer Ästhetik.',
@@ -61,21 +61,24 @@ export const translations = {
     cancel: 'Abbrechen',
     referenceImageAlt: "Referenzbild",
     generatedImageAlt: "Generiertes Tattoo-Bild",
+    visualizePlacementButton: 'Platzierung ansehen', // New for visualizer
 
 
-    // AR Preview Page
-    arPageTitle: 'Augmented Reality Tattoo Vorschau',
-    arPageDescription: 'Visualisiere dein Tattoo-Design auf deinem Körper. Lade ein Bild des Tattoos und ein Foto hoch, wo du es haben möchtest.',
-    previewingConcept: 'Vorschau für Konzept: "{description}"',
-    tattooDesignImage: '1. Tattoo-Design Bild',
-    bodyPartImage: '2. Körperteil Bild',
-    generateARPreview: 'AR Vorschau erstellen',
-    generatingARPreview: 'Deine AR-Vorschau wird generiert... Dies kann einen Moment dauern.',
-    yourARPreview: 'Deine AR Vorschau',
-    readyToVisualize: 'Bereit zur Visualisierung!',
-    readyToVisualizeHint: 'Klicke auf "AR Vorschau erstellen", um dein Tattoo-Konzept zum Leben zu erwecken.',
-    arPreviewAlt: "AR Tattoo Vorschau",
-    
+    // Placement Visualizer Page (New Section)
+    visualizerPageTitle: 'Tattoo Platzierungs-Visualizer',
+    visualizerPageDescription: 'Lade dein Tattoo-Design und ein Bild des Körperteils hoch, um eine Vorschau der Platzierung zu erhalten.',
+    tattooDesignImageLabel: '1. Tattoo-Design Bild',
+    bodyPartImageLabel: '2. Körperteil Bild',
+    visualizeButton: 'Visualisieren',
+    visualizationResultTitle: 'Deine Platzierungsvorschau',
+    visualizationResultAlt: 'Tattoo Platzierungsvorschau',
+    visualizerMissingImagesTitle: 'Fehlende Bilder',
+    visualizerMissingImagesDescription: 'Bitte lade sowohl ein Tattoo-Design als auch ein Bild des Körperteils hoch.',
+    visualizerReadyTitle: 'Bereit zur Visualisierung',
+    visualizerReadyDescription: 'Klicke auf "Visualisieren", um dein Tattoo auf dem Körperteil zu sehen.',
+    visualizerInitialPrompt: 'Lade Bilder hoch, um die Visualisierung zu starten.',
+
+
     // Settings Page
     language: 'Sprache',
     appearance: 'Erscheinungsbild',
@@ -94,12 +97,6 @@ export const translations = {
     invalidFileTypeToastDescription: "Bitte laden Sie {acceptedTypes} hoch.",
 
     // Toasts
-    missingImages: 'Fehlende Bilder',
-    missingImagesDescription: 'Bitte lade sowohl ein Tattoo-Design-Bild als auch ein Körperbild hoch.',
-    arPreviewGenerated: 'AR Vorschau generiert!',
-    arPreviewGeneratedDescription: 'Sieh unten, wie dein Tattoo aussehen könnte.',
-    arPreviewFailed: 'AR Vorschau fehlgeschlagen',
-    arPreviewFailedDescription: 'AR Vorschau konnte nicht generiert werden. Das KI-Modell ist möglicherweise nicht verfügbar oder die Bilder sind nicht geeignet. Bitte versuche es mit anderen Bildern erneut.',
     designsGenerated: 'Designs generiert!',
     designsGeneratedDescription: 'Entdecke unten deine neuen Tattoo-Ideen.',
     generationFailed: 'Generierung fehlgeschlagen',
@@ -118,13 +115,12 @@ export const translations = {
     imageGeneratedSuccessDescription: 'Dein Tattoo-Bild wurde erfolgreich erstellt.',
     imageGeneratedErrorTitle: 'Bildgenerierung fehlgeschlagen',
     imageGeneratedErrorDescription: 'Das Bild für dein Tattoo konnte nicht erstellt werden. Das KI-Modell ist möglicherweise nicht verfügbar oder der Inhalt wurde blockiert. Bitte versuche es später erneut oder mit einer anderen Beschreibung.',
-
   },
   en: {
     // Header
     generate: 'Generate',
     library: 'Library',
-    arPreview: 'AR Preview',
+    visualizer: 'Visualizer', // Changed from arPreview
     settings: 'Settings',
     appTitle: 'TattooAI:Vision',
     appDescription: 'Revolutionary AI-powered tattoo design app with a futuristic aesthetic.',
@@ -177,21 +173,24 @@ export const translations = {
     cancel: 'Cancel',
     referenceImageAlt: "Reference image",
     generatedImageAlt: "Generated tattoo image",
+    visualizePlacementButton: 'Visualize Placement', // New for visualizer
 
 
-    // AR Preview Page
-    arPageTitle: 'Augmented Reality Tattoo Preview',
-    arPageDescription: 'Visualize your tattoo design on your body. Upload an image of the tattoo and a photo of where you want it.',
-    previewingConcept: 'Previewing concept: "{description}"',
-    tattooDesignImage: '1. Tattoo Design Image',
-    bodyPartImage: '2. Body Part Image',
-    generateARPreview: 'Generate AR Preview',
-    generatingARPreview: 'Generating your AR preview... This may take a moment.',
-    yourARPreview: 'Your AR Preview',
-    readyToVisualize: 'Ready to visualize!',
-    readyToVisualizeHint: 'Click "Generate AR Preview" to see your tattoo concept come to life.',
-    arPreviewAlt: "AR Tattoo Preview",
-    
+    // Placement Visualizer Page (New Section)
+    visualizerPageTitle: 'Tattoo Placement Visualizer',
+    visualizerPageDescription: 'Upload your tattoo design and a picture of the body part to preview its placement.',
+    tattooDesignImageLabel: '1. Tattoo Design Image',
+    bodyPartImageLabel: '2. Body Part Image',
+    visualizeButton: 'Visualize',
+    visualizationResultTitle: 'Your Placement Preview',
+    visualizationResultAlt: 'Tattoo Placement Preview',
+    visualizerMissingImagesTitle: 'Missing Images',
+    visualizerMissingImagesDescription: 'Please upload both a tattoo design and a body part image.',
+    visualizerReadyTitle: 'Ready to Visualize',
+    visualizerReadyDescription: 'Click "Visualize" to see your tattoo on the body part.',
+    visualizerInitialPrompt: 'Upload images to start visualizing.',
+
+
     // Settings Page
     language: 'Language',
     appearance: 'Appearance',
@@ -211,12 +210,6 @@ export const translations = {
 
 
     // Toasts
-    missingImages: 'Missing Images',
-    missingImagesDescription: 'Please upload both a tattoo design image and a body image.',
-    arPreviewGenerated: 'AR Preview Generated!',
-    arPreviewGeneratedDescription: 'See how your tattoo might look below.',
-    arPreviewFailed: 'AR Preview Failed',
-    arPreviewFailedDescription: 'Could not generate AR preview. The AI model might be unavailable or the images may not be suitable. Please try again with different images.',
     designsGenerated: 'Designs Generated!',
     designsGeneratedDescription: 'Explore your new tattoo ideas below.',
     generationFailed: 'Generation Failed',
@@ -253,3 +246,4 @@ export function getTranslatedString(
   }
   return str;
 }
+

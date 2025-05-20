@@ -6,7 +6,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 import type { TattooDesign } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trash2, Eye, Palette, Tag, CalendarDays, Library as LibraryIcon } from 'lucide-react';
+import { Trash2, Eye, Palette, Tag, CalendarDays, Library as LibraryIcon, Layers } from 'lucide-react'; // Added Layers
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import {
@@ -111,9 +111,9 @@ export default function LibraryPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row justify-between gap-2 pt-4">
-              <Link href={`/ar-preview?designId=${design.id}`} passHref>
+              <Link href={`/placement-visualizer?designId=${design.id}`} passHref>
                 <Button variant="outline" className="w-full sm:w-auto">
-                  <Eye className="mr-2 h-4 w-4" /> {t('arPreview')}
+                  <Layers className="mr-2 h-4 w-4" /> {t('visualizePlacementButton')}
                 </Button>
               </Link>
               <AlertDialog>
@@ -144,3 +144,4 @@ export default function LibraryPage() {
     </div>
   );
 }
+

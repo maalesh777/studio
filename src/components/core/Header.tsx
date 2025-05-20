@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Sparkles, Library, Camera, Cog } from 'lucide-react'; 
+import { Sparkles, Library, Layers, Cog } from 'lucide-react'; // Changed Camera to Layers
 import { useSettings } from '@/contexts/SettingsContext';
 
 export default function Header() {
@@ -14,7 +14,7 @@ export default function Header() {
   const navItems = [
     { href: '/', labelKey: 'generate' as const, icon: Sparkles },
     { href: '/library', labelKey: 'library' as const, icon: Library },
-    { href: '/ar-preview', labelKey: 'arPreview' as const, icon: Camera },
+    { href: '/placement-visualizer', labelKey: 'visualizer' as const, icon: Layers }, // Changed from AR Preview
     { href: '/settings', labelKey: 'settings' as const, icon: Cog },
   ];
 
@@ -73,3 +73,4 @@ export default function Header() {
     </header>
   );
 }
+

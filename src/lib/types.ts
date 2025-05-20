@@ -7,7 +7,7 @@ export interface TattooDesign {
   referenceImage?: string; // Data URI of the reference image uploaded by user
   createdAt: string;
   generatedImageUri?: string; // Data URI of an AI generated image representing this design
-  arPreviewImageUri?: string; // Data URI of the AR preview image
+  // arPreviewImageUri?: string; // Removed AR Preview
 }
 
 export interface GeneratedProposal {
@@ -16,3 +16,4 @@ export interface GeneratedProposal {
   isGeneratingImage?: boolean;
   refinedImageGenerationPrompt?: string; 
 }
+

@@ -1,3 +1,14 @@
 {
-  "extensions": {}
+  "extensions": {},
+  "apphosting": {
+    "backendId": "tattooai-vision",
+    "rootDir": "/",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "functions"
+    ]
+  }
 }
