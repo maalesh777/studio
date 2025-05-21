@@ -1,23 +1,92 @@
 # Settings for Backend (on Cloud Run).
 # See https://firebase.google.com/docs/app-hosting/configure#cloud-run
 runConfig:
-  minInstances: 0
-  # maxInstances: 100
-  # concurrency: 80
-  # cpu: 1
-  # memoryMiB: 512
+  # minInstances: 0 # Default is 0, uncomment to change if you need instances always running
+  # maxInstances: 100 # Default is 100, uncomment to change
+  # concurrency: 80 # Default is 80, uncomment to change
+  # cpu: 1 # Default is 1 (1 vCPU), uncomment to change (e.g., 2 for 2 vCPUs, max 8)
+  # memoryMiB: 512 # Default is 512, uncomment to change (e.g., 1024 for 1GiB, max 32768)
 
 # Environment variables and secrets.
-# env:
-  # Configure environment variables.
-  # See https://firebase.google.com/docs/app-hosting/configure#user-defined-environment
-  # - variable: MESSAGE
-  #   value: Hello world!
-  #   availability:
-  #     - BUILD
-  #     - RUNTIME
+# See https://firebase.google.com/docs/app-hosting/configure#environment-variables
+# and https://firebase.google.com/docs/app-hosting/configure#secret-parameters
+env:
+  # Firebase Configuration - ensure these are set in your App Hosting backend settings
+  # These are prefixed with NEXT_PUBLIC_ to be available client-side in Next.js
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: "YOUR_FIREBASE_API_KEY" # ### REPLACE WITH YOUR ACTUAL KEY or set directly in App Hosting console ###
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "YOUR_FIREBASE_AUTH_DOMAIN" # ### REPLACE or set in console ###
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "YOUR_FIREBASE_PROJECT_ID" # ### REPLACE or set in console ###
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "YOUR_FIREBASE_STORAGE_BUCKET" # ### REPLACE or set in console ###
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "YOUR_FIREBASE_MESSAGING_SENDER_ID" # ### REPLACE or set in console ###
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "YOUR_FIREBASE_APP_ID" # ### REPLACE or set in console ###
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    value: "YOUR_FIREBASE_MEASUREMENT_ID" # Optional: ### REPLACE or set in console if used ###
+    availability:
+      - BUILD
+      - RUNTIME
 
-  # Grant access to secrets in Cloud Secret Manager.
-  # See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
-  # - variable: MY_SECRET
-  #   secret: mySecretRef
+  # Firebase App Check (reCAPTCHA v3)
+  - variable: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+    value: "YOUR_RECAPTCHA_V3_SITE_KEY" # ### REPLACE WITH YOUR ACTUAL KEY or set in console ###
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Genkit Google AI API Key - Recommended to be set as a secret
+  # 1. Create a secret in Google Cloud Secret Manager with your Google AI API Key.
+  # 2. Grant the "Secret Manager Secret Accessor" role to your App Hosting service account for this secret.
+  #    The service account is typically "PROJECT_NUMBER-compute@developer.gserviceaccount.com" or
+  #    one specific to App Hosting. Check your IAM settings.
+  # 3. Reference the secret name here (not the key itself).
+  # Alternatively, if your App Hosting service account has sufficient permissions (e.g., Vertex AI User),
+  # Genkit might use Application Default Credentials (ADC) automatically without needing this key explicitly.
+  - variable: GOOGLE_API_KEY
+    secret: "YOUR_GOOGLE_API_KEY_SECRET_NAME" # ### REPLACE with your secret name in Secret Manager ###
+    availability:
+      - RUNTIME # Genkit (server-side) needs this at runtime
+
+  # Node environment
+  - variable: NODE_ENV
+    value: "production"
+    availability:
+      - BUILD
+      - RUNTIME
+
+# Optional: Specify Node.js version if needed
+# Firebase App Hosting buildpacks typically use a recent LTS version.
+# If you require a specific version, uncomment and set.
+# See https://firebase.google.com/docs/app-hosting/configure#build_configuration
+# buildSystem:
+#   nodejs:
+#     version: "20" # Specify your desired Node.js major version (e.g., 18, 20)
+
+# Required: The command to start your Next.js application in production
+# This is often automatically detected by the Next.js buildpack for App Hosting.
+# If your "start" script in package.json is "next start", this is usually not needed.
+# However, being explicit can sometimes be helpful.
+# binary: npm # or 'yarn' or 'pnpm' if you use those and configure it
+# args: ["run", "start"]

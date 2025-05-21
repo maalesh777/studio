@@ -12,16 +12,18 @@ import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
-// Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyD-hPs4JjOg6GSGeKaUggDa2YJ8c8Qb2e8",
-  authDomain: "tattoo-ai-f582e.firebaseapp.com",
-  projectId: "tattoo-ai-f582e",
-  storageBucket: "tattoo-ai-f582e.firebasestorage.app",
-  messagingSenderId: "498697375782",
-  appId: "1:498697375782:web:5389f0138f60e799afd6e7",
-  measurementId: "G-6VYML0KRKN"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
+
+const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -41,28 +43,48 @@ export default function AppProviders({ children }: AppProvidersProps) {
   }));
 
   useEffect(() => {
-    // Ensure this runs only on the client and Firebase hasn't been initialized yet.
-    if (typeof window !== 'undefined' && !getApps().length) {
-      firebaseAppInstance = initializeApp(firebaseConfig);
+    // Ensure this runs only on the client
+    if (typeof window !== 'undefined') {
+      // Check if all required Firebase config values are present
+      const requiredConfigKeys: (keyof typeof firebaseConfig)[] = ['apiKey', 'authDomain', 'projectId', 'appId'];
+      const missingKeys = requiredConfigKeys.filter(key => !firebaseConfig[key]);
 
-      if (firebaseAppInstance) {
-        try {
-          getAnalytics(firebaseAppInstance);
-        } catch (analyticsError: any) {
-          console.error("Failed to initialize Firebase Analytics:", analyticsError);
-        }
+      if (missingKeys.length > 0) {
+        console.error(`Firebase configuration is missing the following keys: ${missingKeys.join(', ')}. Check your environment variables.`);
+        return; // Don't initialize Firebase if config is incomplete
+      }
 
-        // Initialize App Check
+      if (!recaptchaSiteKey) {
+        console.error("reCAPTCHA site key (NEXT_PUBLIC_RECAPTCHA_SITE_KEY) is missing. App Check will not be initialized.");
+      }
+
+      if (!getApps().length) {
         try {
-          initializeAppCheck(firebaseAppInstance, {
-            provider: new ReCaptchaV3Provider('6LfQCj0rAAAAANKHeF1l_mXodEUBOvBe1lD_mKUv'),
-            isTokenAutoRefreshEnabled: true
-          });
-          // console.log("Firebase App Check initialized successfully.");
-        } catch (appCheckError: any) {
-          console.error("Failed to initialize Firebase App Check:", appCheckError);
-          // You might want to display a message to the user or disable
-          // features that rely on App Check if initialization fails.
+          firebaseAppInstance = initializeApp(firebaseConfig);
+          // console.log("Firebase App initialized successfully.");
+
+          // Initialize Analytics
+          try {
+            getAnalytics(firebaseAppInstance);
+            // console.log("Firebase Analytics initialized successfully.");
+          } catch (analyticsError: any) {
+            console.error("Failed to initialize Firebase Analytics:", analyticsError);
+          }
+
+          // Initialize App Check (only if reCAPTCHA key is available)
+          if (recaptchaSiteKey && firebaseAppInstance) {
+            try {
+               initializeAppCheck(firebaseAppInstance, {
+                provider: new ReCaptchaV3Provider(recaptchaSiteKey),
+                isTokenAutoRefreshEnabled: true
+              });
+              // console.log("Firebase App Check initialized successfully.");
+            } catch (appCheckError: any) {
+              console.error("Failed to initialize Firebase App Check:", appCheckError);
+            }
+          }
+        } catch (initError: any) {
+          console.error("Failed to initialize Firebase App:", initError);
         }
       }
     }
