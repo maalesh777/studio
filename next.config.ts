@@ -13,10 +13,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
+        hostname: 'source.unsplash.com', // Added Unsplash
         port: '',
         pathname: '/**',
       },
+      // Removed placehold.co pattern
     ],
   },
 };
