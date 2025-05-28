@@ -14,37 +14,37 @@ env:
   # Firebase Configuration - ensure these are set in your App Hosting backend settings
   # These are prefixed with NEXT_PUBLIC_ to be available client-side in Next.js
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: "YOUR_FIREBASE_API_KEY" # ### REPLACE WITH YOUR ACTUAL KEY or set directly in App Hosting console ###
+    value: "AIzaSyD-hPs4JjOg6GSGeKaUggDa2YJ8c8Qb2e8" # ### REPLACE WITH YOUR ACTUAL KEY or set directly in App Hosting console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: "YOUR_FIREBASE_AUTH_DOMAIN" # ### REPLACE or set in console ###
+    value: "tattoo-ai-f582e.firebaseapp.com" # ### REPLACE or set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: "YOUR_FIREBASE_PROJECT_ID" # ### REPLACE or set in console ###
+    value: "tattoo-ai-f582e" # ### REPLACE or set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: "YOUR_FIREBASE_STORAGE_BUCKET" # ### REPLACE or set in console ###
+    value: "tattoo-ai-f582e.firebasestorage.app" # ### REPLACE or set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: "YOUR_FIREBASE_MESSAGING_SENDER_ID" # ### REPLACE or set in console ###
+    value: "498697375782" # ### REPLACE or set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: "YOUR_FIREBASE_APP_ID" # ### REPLACE or set in console ###
+    value: "1:498697375782:web:d6848fc69922a3baafd6e7" # ### REPLACE or set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    value: "YOUR_FIREBASE_MEASUREMENT_ID" # Optional: ### REPLACE or set in console if used ###
+    value: "G-G0QZEW5LB6" # Optional: ### REPLACE or set in console if used ###
     availability:
       - BUILD
       - RUNTIME
