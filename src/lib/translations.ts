@@ -77,6 +77,7 @@ export const translations = {
     visualizerReadyTitle: 'Bereit zur Visualisierung',
     visualizerReadyDescription: 'Klicke auf "Visualisieren", um dein Tattoo auf dem Körperteil zu sehen.',
     visualizerInitialPrompt: 'Lade Bilder hoch, um die Visualisierung zu starten.',
+    previewingConcept: 'Konzeptvorschau: {{description}}',
 
 
     // Settings Page
@@ -189,6 +190,7 @@ export const translations = {
     visualizerReadyTitle: 'Ready to Visualize',
     visualizerReadyDescription: 'Click "Visualize" to see your tattoo on the body part.',
     visualizerInitialPrompt: 'Upload images to start visualizing.',
+    previewingConcept: 'Previewing concept: {{description}}',
 
 
     // Settings Page

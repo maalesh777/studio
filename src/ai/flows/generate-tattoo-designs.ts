@@ -16,7 +16,7 @@ import {z} from 'genkit';
 const GenerateTattooDesignsInputSchema = z.object({
   description: z.string().describe('A detailed description of the desired tattoo, including style, elements, and placement.'),
   stylePreferences: z.string().describe('The preferred tattoo styles (e.g., traditional, minimalist, watercolor).'),
-  keywords: z.string().describe('Keywords related to the tattoo design (e.g., nature, geometric, abstract).'),
+  keywords: z.string().optional().describe('Keywords related to the tattoo design (e.g., nature, geometric, abstract).'),
   referenceImage: z
     .string()
     .optional()
@@ -66,7 +66,7 @@ const generateTattooDesignsPrompt = ai.definePrompt({
 
   Description: {{{description}}}
   Style Preferences: {{{stylePreferences}}}
-  Keywords: {{{keywords}}}
+  {{~#if keywords}}Keywords: {{{keywords}}}{{/if}}
   {{~#if referenceImage}}Reference Image: {{media url=referenceImage}}{{/if}}
 
   Example Usage of incorporateElement Tool:
@@ -89,8 +89,19 @@ const generateTattooDesignsFlow = ai.defineFlow(
     inputSchema: GenerateTattooDesignsInputSchema,
     outputSchema: GenerateTattooDesignsOutputSchema,
   },
-  async input => {
-    const {output} = await generateTattooDesignsPrompt(input);
-    return output!;
+  async (input): Promise<GenerateTattooDesignsOutput> => {
+    const llmResponse = await generateTattooDesignsPrompt(input);
+
+    if (!llmResponse.output) {
+      const rawText = llmResponse.text;
+      console.error(
+        `AI failed to return valid structured output for generateTattooDesignsFlow. Input: ${JSON.stringify(input)}, Raw AI Text: ${rawText}`
+      );
+      throw new Error(
+        'The AI failed to generate design proposals in the expected format. This could be due to the complexity of the request or a temporary issue. Please try rephrasing your request or try again later.'
+      );
+    }
+    return llmResponse.output;
   }
 );
+

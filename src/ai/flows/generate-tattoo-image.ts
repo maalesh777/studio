@@ -61,8 +61,8 @@ const generateTattooImageFlow = ai.defineFlow(
       },
     });
 
-    if (!media.url) {
-      throw new Error('Image generation failed or returned no media URL.');
+    if (!media || !media.url) { // Added check for media being null or undefined
+ throw new Error('Image generation failed or returned no media or media URL.');
     }
     return {imageDataUri: media.url};
   }

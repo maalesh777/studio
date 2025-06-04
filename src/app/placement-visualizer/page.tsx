@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -14,60 +13,157 @@ import { useToast } from '@/hooks/use-toast';
 import { Layers, ImagePlus, AlertTriangle, Sparkles } from 'lucide-react';
 import LoadingSpinner from '@/components/core/LoadingSpinner';
 
-export default function PlacementVisualizerPage() {
+interface VisualizationState {
+  tattooDesignDataUri: string;
+  tattooDesignFileName: string;
+  bodyPartDataUri: string;
+  bodyPartFileName: string;
+  showVisualization: boolean;
+  initialDesignDescription: string | null;
+}
+
+export default function PlacementVisualizerPage(): JSX.Element {
   const { t } = useSettings();
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const [savedDesigns] = useLocalStorage<TattooDesign[]>('tattooDesigns', []);
 
-  const [tattooDesignDataUri, setTattooDesignDataUri] = useState<string>("");
-  const [tattooDesignFileName, setTattooDesignFileName] = useState<string>("");
-  const [bodyPartDataUri, setBodyPartDataUri] = useState<string>("");
-  const [bodyPartFileName, setBodyPartFileName] = useState<string>("");
-  
-  const [showVisualization, setShowVisualization] = useState<boolean>(false);
-  const [initialDesignDescription, setInitialDesignDescription] = useState<string | null>(null);
+  const [state, setState] = useState<VisualizationState>({
+    tattooDesignDataUri: "",
+    tattooDesignFileName: "",
+    bodyPartDataUri: "",
+    bodyPartFileName: "",
+    showVisualization: false,
+    initialDesignDescription: null
+  });
+
+  // Destructure state for cleaner access
+  const {
+    tattooDesignDataUri,
+    tattooDesignFileName,
+    bodyPartDataUri,
+    bodyPartFileName,
+    showVisualization,
+    initialDesignDescription
+  } = state;
 
   useEffect(() => {
     const designId = searchParams.get('designId');
-    if (designId) {
-      const design = savedDesigns.find(d => d.id === designId);
+    if (designId && savedDesigns.length > 0) {
+      const design = savedDesigns.find((d: TattooDesign) => d.id === designId);
       if (design) {
-        setInitialDesignDescription(design.description);
-        if (design.generatedImageUri) {
-          setTattooDesignDataUri(design.generatedImageUri);
-          setTattooDesignFileName(t('generatedImageAlt'));
-        } else if (design.referenceImage) {
-          setTattooDesignDataUri(design.referenceImage);
-          setTattooDesignFileName(t('referenceImageAlt'));
-        }
+        setState(prev => ({
+          ...prev,
+          initialDesignDescription: design.description || null,
+          tattooDesignDataUri: design.generatedImageUri || design.referenceImage || "",
+          tattooDesignFileName: design.generatedImageUri 
+            ? t('generatedImageAlt') 
+            : t('referenceImageAlt')
+        }));
       }
     }
   }, [searchParams, savedDesigns, t]);
 
-  const handleVisualize = () => {
+  const handleVisualize = (): void => {
     if (!tattooDesignDataUri || !bodyPartDataUri) {
       toast({
         variant: "destructive",
         title: t('visualizerMissingImagesTitle'),
         description: t('visualizerMissingImagesDescription'),
       });
-      setShowVisualization(false);
+      setState(prev => ({ ...prev, showVisualization: false }));
       return;
     }
-    setShowVisualization(true);
+    setState(prev => ({ ...prev, showVisualization: true }));
   };
 
-  const handleTattooUpload = (fileName: string, dataUri: string) => {
-    setTattooDesignDataUri(dataUri);
-    setTattooDesignFileName(fileName);
-    setShowVisualization(false); // Reset visualization if new image is uploaded
+  const handleTattooUpload = (fileName: string, dataUri: string): void => {
+    setState(prev => ({
+      ...prev,
+      tattooDesignDataUri: dataUri,
+      tattooDesignFileName: fileName,
+      showVisualization: false // Reset visualization when new image is uploaded
+    }));
   };
 
-  const handleBodyPartUpload = (fileName: string, dataUri: string) => {
-    setBodyPartDataUri(dataUri);
-    setBodyPartFileName(fileName);
-    setShowVisualization(false); // Reset visualization if new image is uploaded
+  const handleBodyPartUpload = (fileName: string, dataUri: string): void => {
+    setState(prev => ({
+      ...prev,
+      bodyPartDataUri: dataUri,
+      bodyPartFileName: fileName,
+      showVisualization: false // Reset visualization when new image is uploaded
+    }));
+  };
+
+  const renderVisualization = (): JSX.Element | null => {
+    if (!showVisualization || !tattooDesignDataUri || !bodyPartDataUri) {
+      return null;
+    }
+
+    return (
+      <Card className="shadow-xl border-primary/30 bg-card/90">
+        <CardHeader>
+          <CardTitle className="text-2xl">{t('visualizationResultTitle')}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center items-center">
+          <div className="relative w-full max-w-xl aspect-square border-2 border-border rounded-lg overflow-hidden">
+            <Image
+              src={bodyPartDataUri}
+              alt={bodyPartFileName || t('bodyPartImageLabel')}
+              fill
+              style={{ objectFit: 'contain' }}
+              data-ai-hint="body part"
+              priority
+            />
+            {/* Tattoo overlay with enhanced positioning */}
+            <div 
+              className="absolute top-1/4 left-1/4 w-1/2 h-1/2 pointer-events-none"
+              style={{
+                backgroundImage: `url(${tattooDesignDataUri})`,
+                backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                filter: 'drop-shadow(2px 4px 6px rgba(0,0,0,0.3))',
+                opacity: 0.9
+              }}
+              title={tattooDesignFileName || t('tattooDesignImageLabel')}
+              data-ai-hint="tattoo overlay"
+            />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderReadyState = (): JSX.Element | null => {
+    if (showVisualization || !tattooDesignDataUri || !bodyPartDataUri) {
+      return null;
+    }
+
+    return (
+      <Card className="border-dashed border-primary/30 bg-card/50 py-8">
+        <CardContent className="text-center space-y-3 text-muted-foreground">
+          <ImagePlus className="mx-auto h-12 w-12 text-primary/50" />
+          <p className="text-lg">{t('visualizerReadyTitle')}</p>
+          <p>{t('visualizerReadyDescription')}</p>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderInitialPrompt = (): JSX.Element | null => {
+    if (tattooDesignDataUri || bodyPartDataUri || showVisualization) {
+      return null;
+    }
+
+    return (
+      <Card className="border-dashed border-muted/50 bg-card/50 py-8">
+        <CardContent className="text-center space-y-3 text-muted-foreground">
+          <AlertTriangle className="mx-auto h-12 w-12 text-muted-foreground/30" />
+          <p className="text-lg">{t('visualizerInitialPrompt')}</p>
+        </CardContent>
+      </Card>
+    );
   };
 
   return (
@@ -82,7 +178,11 @@ export default function PlacementVisualizerPage() {
             {t('visualizerPageDescription')}
             {initialDesignDescription && (
               <span className="block mt-2 text-sm italic">
-                {t('previewingConcept', { description: initialDesignDescription.substring(0,100) + "..." })}
+                {t('previewingConcept', { 
+                  description: initialDesignDescription.length > 100 
+                    ? `${initialDesignDescription.substring(0, 100)}...` 
+                    : initialDesignDescription 
+                })}
               </span>
             )}
           </CardDescription>
@@ -114,56 +214,9 @@ export default function PlacementVisualizerPage() {
         </CardContent>
       </Card>
 
-      {showVisualization && tattooDesignDataUri && bodyPartDataUri && (
-        <Card className="shadow-xl border-primary/30 bg-card/90">
-          <CardHeader>
-            <CardTitle className="text-2xl">{t('visualizationResultTitle')}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex justify-center items-center">
-            <div className="relative w-full max-w-xl aspect-square border-2 border-border rounded-lg overflow-hidden">
-              <Image
-                src={bodyPartDataUri}
-                alt={bodyPartFileName || t('bodyPartImageLabel')}
-                layout="fill"
-                objectFit="contain"
-                data-ai-hint="body part"
-              />
-              {/* Basic overlay - can be enhanced with draggable/resizable component later */}
-              <div 
-                className="absolute top-1/4 left-1/4 w-1/2 h-1/2" // Example positioning and size
-                style={{
-                    backgroundImage: `url(${tattooDesignDataUri})`,
-                    backgroundSize: 'contain',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    // Add filter: 'drop-shadow(2px 4px 6px black)' for a simple shadow
-                }}
-                title={tattooDesignFileName || t('tattooDesignImageLabel')}
-                data-ai-hint="tattoo overlay"
-               />
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {!showVisualization && tattooDesignDataUri && bodyPartDataUri && (
-        <Card className="border-dashed border-primary/30 bg-card/50 py-8">
-          <CardContent className="text-center space-y-3 text-muted-foreground">
-              <ImagePlus className="mx-auto h-12 w-12 text-primary/50" />
-              <p className="text-lg">{t('visualizerReadyTitle')}</p>
-              <p>{t('visualizerReadyDescription')}</p>
-          </CardContent>
-        </Card>
-      )}
-      
-      {!tattooDesignDataUri && !bodyPartDataUri && !showVisualization && (
-         <Card className="border-dashed border-muted/50 bg-card/50 py-8">
-          <CardContent className="text-center space-y-3 text-muted-foreground">
-              <AlertTriangle className="mx-auto h-12 w-12 text-muted-foreground/30" />
-              <p className="text-lg">{t('visualizerInitialPrompt')}</p>
-          </CardContent>
-        </Card>
-      )}
+      {renderVisualization()}
+      {renderReadyState()}
+      {renderInitialPrompt()}
     </div>
   );
 }
