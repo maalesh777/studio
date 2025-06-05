@@ -14,58 +14,57 @@ env:
   # Firebase Configuration - ensure these are set in your App Hosting backend settings
   # These are prefixed with NEXT_PUBLIC_ to be available client-side in Next.js
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: "AIzaSyBVGrAzuyK43PTCCJZ55JbFG1HZUOJDK9c" # ### REPLACE WITH YOUR ACTUAL KEY or set directly in App Hosting console ###
+    value: "REPLACE_WITH_YOUR_ACTUAL_FIREBASE_API_KEY" # ### THIS IS A PLACEHOLDER. Set your actual key in App Hosting console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: "tattoo-ai-f582e.firebaseapp.com" # ### REPLACE or set in console ###
+    value: "REPLACE_WITH_YOUR_ACTUAL_FIREBASE_AUTH_DOMAIN" # ### e.g., your-project-id.firebaseapp.com. Set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: "tattoo-ai-f582e" # ### REPLACE or set in console ###
+    value: "REPLACE_WITH_YOUR_ACTUAL_FIREBASE_PROJECT_ID" # ### THIS IS A PLACEHOLDER. Set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: "tattoo-ai-f582e.firebasestorage.app" # ### REPLACE or set in console ###
+    value: "REPLACE_WITH_YOUR_ACTUAL_FIREBASE_STORAGE_BUCKET" # ### e.g., your-project-id.appspot.com. Set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: "498697375782" # ### REPLACE or set in console ###
+    value: "REPLACE_WITH_YOUR_ACTUAL_MESSAGING_SENDER_ID" # ### THIS IS A PLACEHOLDER. Set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: "1:498697375782:web:d6848fc69922a3baafd6e7" # ### REPLACE or set in console ###
+    value: "REPLACE_WITH_YOUR_ACTUAL_FIREBASE_APP_ID" # ### THIS IS A PLACEHOLDER. Set in console ###
     availability:
       - BUILD
       - RUNTIME
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    value: "G-G0QZEW5LB6" # Optional: ### REPLACE or set in console if used ###
+    value: "REPLACE_WITH_YOUR_FIREBASE_MEASUREMENT_ID_OR_REMOVE" # Optional: ### Set in console if used, otherwise this variable can be removed ###
     availability:
       - BUILD
       - RUNTIME
 
   # Firebase App Check (reCAPTCHA v3)
   - variable: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-    value: "Y6LcT00IrAAAAABYCaLRF2Cw6vvw8pwOpfw_-7om8" # ### REPLACE WITH YOUR ACTUAL KEY or set in console ###
+    value: "REPLACE_WITH_YOUR_ACTUAL_RECAPTCHA_SITE_KEY" # ### THIS IS A PLACEHOLDER. Set your reCAPTCHA v3 site key in console ###
     availability:
       - BUILD
       - RUNTIME
 
   # Genkit Google AI API Key - Recommended to be set as a secret
   # 1. Create a secret in Google Cloud Secret Manager with your Google AI API Key.
+  #    (e.g., name it "GOOGLE_AI_API_KEY_SECRET")
   # 2. Grant the "Secret Manager Secret Accessor" role to your App Hosting service account for this secret.
   #    The service account is typically "PROJECT_NUMBER-compute@developer.gserviceaccount.com" or
   #    one specific to App Hosting. Check your IAM settings.
   # 3. Reference the secret name here (not the key itself).
-  # Alternatively, if your App Hosting service account has sufficient permissions (e.g., Vertex AI User),
-  # Genkit might use Application Default Credentials (ADC) automatically without needing this key explicitly.
   - variable: GOOGLE_API_KEY
-    secret: "projects/498697375782/secrets/API_Key" # ### REPLACE with your secret name in Secret Manager ###
+    secret: "REPLACE_WITH_YOUR_SECRET_NAME_IN_SECRET_MANAGER" # ### e.g., projects/YOUR_PROJECT_ID/secrets/YOUR_GOOGLE_AI_KEY_SECRET_NAME ###
     availability:
       - RUNTIME # Genkit (server-side) needs this at runtime
 
