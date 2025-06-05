@@ -14,7 +14,7 @@ env:
   # Firebase Configuration - ensure these are set in your App Hosting backend settings
   # These are prefixed with NEXT_PUBLIC_ to be available client-side in Next.js
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: "AIzaSyD-hPs4JjOg6GSGeKaUggDa2YJ8c8Qb2e8" # ### REPLACE WITH YOUR ACTUAL KEY or set directly in App Hosting console ###
+    value: "AIzaSyBVGrAzuyK43PTCCJZ55JbFG1HZUOJDK9c" # ### REPLACE WITH YOUR ACTUAL KEY or set directly in App Hosting console ###
     availability:
       - BUILD
       - RUNTIME
@@ -51,7 +51,7 @@ env:
 
   # Firebase App Check (reCAPTCHA v3)
   - variable: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-    value: "YOUR_RECAPTCHA_V3_SITE_KEY" # ### REPLACE WITH YOUR ACTUAL KEY or set in console ###
+    value: "Y6LcT00IrAAAAABYCaLRF2Cw6vvw8pwOpfw_-7om8" # ### REPLACE WITH YOUR ACTUAL KEY or set in console ###
     availability:
       - BUILD
       - RUNTIME
@@ -65,7 +65,7 @@ env:
   # Alternatively, if your App Hosting service account has sufficient permissions (e.g., Vertex AI User),
   # Genkit might use Application Default Credentials (ADC) automatically without needing this key explicitly.
   - variable: GOOGLE_API_KEY
-    secret: "YOUR_GOOGLE_API_KEY_SECRET_NAME" # ### REPLACE with your secret name in Secret Manager ###
+    secret: "projects/498697375782/secrets/API_Key" # ### REPLACE with your secret name in Secret Manager ###
     availability:
       - RUNTIME # Genkit (server-side) needs this at runtime
 
