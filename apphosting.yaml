@@ -16,30 +16,29 @@ runConfig:
 env:
   # Firebase SDK Configuration (Client-side, but needed at build time by Next.js)
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE" # ### Get from Firebase project settings > General ###
+    value: "AIzaSyD-hPs4JjOg6GSGeKaUggDa2YJ8c8Qb2e8" # ### Get from Firebase project settings > General ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE" # ### e.g., your-project-id.firebaseapp.com ###
+    value: "tattoo-ai-f582e.firebaseapp.com" # ### e.g., your-project-id.firebaseapp.com ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE" # ### Your Firebase Project ID ###
+    value: "tattoo-ai-f582e" # ### Your Firebase Project ID ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE" # ### e.g., your-project-id.appspot.com ###
+    value: "tattoo-ai-f582e.firebasestorage.app" # ### e.g., your-project-id.appspot.com ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE" # ### Get from Firebase project settings > Cloud Messaging ###
+    value: "498697375782" # ### Get from Firebase project settings > Cloud Messaging ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE" # ### Get from Firebase project settings > General > Your apps ###
+    value: "1:498697375782:web:5389f0138f60e799afd6e7" # ### Get from Firebase project settings > General > Your apps ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE_OR_LEAVE_EMPTY" # ### Optional: Get from Firebase project settings > General > Your apps (if you use Analytics) ###
+    value: "G-6VYML0KRKN" # ### Optional: Get from Firebase project settings > General > Your apps (if you use Analytics) ###
     availability: [BUILD, RUNTIME]
 
-  # Firebase App Check (reCAPTCHA v3) (Client-side)
   - variable: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-    value: "CONFIGURE_IN_APP_HOSTING_CONSOLE" # ### Get from Firebase project settings > App Check > Your Web App ###
+    value: "6LfuhFYrAAAAAMT5UZnTRdkxq_Jnxgh8yVnDSifs
     availability: [BUILD, RUNTIME]
 
   # Genkit Google AI API Key (Server-side)
@@ -50,13 +49,17 @@ env:
   #    a specific App Hosting service account. Check your project's IAM settings.
   # 3. Reference the secret resource name here (e.g., projects/YOUR_PROJECT_ID/secrets/YOUR_SECRET_NAME/versions/latest).
   - variable: GOOGLE_API_KEY
-    secret: "projects/YOUR_PROJECT_ID/secrets/YOUR_GOOGLE_AI_KEY_SECRET_NAME/versions/latest" # ### CONFIGURE THE SECRET PATH ###
+    secret: "projects/498697375782/secrets/API_Key" # ### CONFIGURE THE SECRET PATH ###
     availability: [RUNTIME] # Genkit (server-side) needs this at runtime
 
   # Node environment
   - variable: NODE_ENV
     value: "production"
     availability: [BUILD, RUNTIME]
+
+    buildSystem:
+    nodejs:
+    version: "20"
 
 # Optional: Specify Node.js version if needed.
 # Firebase App Hosting buildpacks typically use a recent LTS version (e.g., Node 20).
