@@ -38,16 +38,10 @@ env:
     availability: [BUILD, RUNTIME]
 
   - variable: NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-    value: "6LfuhFYrAAAAAMT5UZnTRdkxq_Jnxgh8yVnDSifs
+    value: "6LfuhFYrAAAAAMT5UZnTRdkxq_Jnxgh8yVnDSifs" # Corrected: Added closing double quote
     availability: [BUILD, RUNTIME]
 
-  # Genkit Google AI API Key (Server-side)
-  # 1. Create a secret in Google Cloud Secret Manager with your Google AI API Key.
-  #    (e.g., name it "tattooai-google-api-key" or similar for your project).
-  # 2. Grant the "Secret Manager Secret Accessor" role to your App Hosting service account for this secret.
-  #    The service account is typically "YOUR_PROJECT_NUMBER-compute@developer.gserviceaccount.com" or
-  #    a specific App Hosting service account. Check your project's IAM settings.
-  # 3. Reference the secret resource name here (e.g., projects/YOUR_PROJECT_ID/secrets/YOUR_SECRET_NAME/versions/latest).
+
   - variable: GOOGLE_API_KEY
     secret: "projects/498697375782/secrets/API_Key" # ### CONFIGURE THE SECRET PATH ###
     availability: [RUNTIME] # Genkit (server-side) needs this at runtime
@@ -57,16 +51,12 @@ env:
     value: "production"
     availability: [BUILD, RUNTIME]
 
-    buildSystem:
-    nodejs:
-    version: "20"
-
 # Optional: Specify Node.js version if needed.
 # Firebase App Hosting buildpacks typically use a recent LTS version (e.g., Node 20).
 # If you require a specific version, uncomment and set.
-# buildSystem:
-#   nodejs:
-#     version: "20" # Specify your desired Node.js major version (e.g., 18, 20)
+buildSystem: # Corrected: Moved to the correct top-level
+  nodejs:
+    version: "20" # Specify your desired Node.js major version (e.g., 18, 20)
 
 # The command to start your Next.js application in production is usually auto-detected by the Next.js buildpack.
 # If your "start" script in package.json is "next start", this is usually not needed.
