@@ -56,3 +56,4 @@ node_modules/
 # Ignoriere Umgebungsvariablen-Datei (falls du eine hast, z.B. .env)
 .env
 .env.local
+.env.*.local
