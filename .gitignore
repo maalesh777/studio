@@ -43,3 +43,16 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# Ignoriere Node.js Abhängigkeiten
+node_modules/
+
+# Ignoriere Next.js Build Output
+.next/
+
+# Ignoriere lokale Firebase Emulator & Frameworks Build Output
+.firebase/
+
+# Ignoriere Umgebungsvariablen-Datei (falls du eine hast, z.B. .env)
+.env
+.env.local
