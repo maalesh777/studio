@@ -12,6 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource-variable/geist": "^5.2.6",
+    "@fontsource-variable/geist-mono": "^5.2.6",
     "@genkit-ai/googleai": "^1.8.0",
     "@genkit-ai/next": "^1.8.0",
     "@hookform/resolvers": "^4.1.3",

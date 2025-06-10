@@ -1,21 +1,13 @@
 
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import '@fontsource-variable/geist/index.css';
+import '@fontsource-variable/geist-mono/index.css';
 import './globals.css';
 import Header from '@/components/core/Header';
 import { Toaster } from "@/components/ui/toaster";
 import AppProviders from '@/components/core/AppProviders';
 import { translations } from '@/lib/translations'; // Import translations
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 // Default metadata to German initially
 export const metadata: Metadata = {
@@ -39,7 +31,7 @@ export default function RootLayout({
     // The lang attribute will be set dynamically by SettingsContext on the client
     // The class (for theme) will also be set dynamically by SettingsContext
     <html lang="de" className="light">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased">
         <AppProviders>
           <div className="flex flex-col min-h-screen">
             <Header />
