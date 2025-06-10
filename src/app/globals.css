@@ -1,9 +1,14 @@
+@import '@fontsource-variable/geist/index.css';
+@import '@fontsource-variable/geist-mono/index.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
+    --font-geist-sans: 'Geist Variable', sans-serif;
+    --font-geist-mono: 'Geist Mono Variable', monospace;
     --background: 40 30% 96%; /* Light Beige */
     --foreground: 40 10% 25%; /* Dark Greyish Brown */
 
