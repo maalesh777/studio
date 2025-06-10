@@ -25,7 +25,7 @@ env:
     value: "tattoo-ai-f582e" # ### Your Firebase Project ID ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: "tattoo-ai-f582e.firebasestorage.app" # ### e.g., your-project-id.appspot.com ###
+    value: "tattoo-ai-f582e.appspot.com" # ### e.g., your-project-id.appspot.com ###
     availability: [BUILD, RUNTIME]
   - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
     value: "498697375782" # ### Get from Firebase project settings > Cloud Messaging ###
